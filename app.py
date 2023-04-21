@@ -49,7 +49,7 @@ def conversation():
         enable_in_domain = settings.get('in_domain_only', True)
         body["enable_Indomain"] = enable_in_domain
 
-        AZURE_SEARCH_INDEX = settings.get("acs_index")
+        AZURE_SEARCH_INDEX = settings.get("acs_index", "m365index")
 
         if AZURE_OPENAI_STOP_SEQUENCE:
             sequences = AZURE_OPENAI_STOP_SEQUENCE.split("|")

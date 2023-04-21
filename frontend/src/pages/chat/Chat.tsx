@@ -29,15 +29,15 @@ enum Tabs {
 const Chat = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(true);
-    const [acsIndex, setacsIndex] = useState<string>("m365combinedindex");
+    const [acsIndex, setacsIndex] = useState<string>("m365index");
 
     const acsIndexOptions: IDropdownOption[] = [
-      { key: "m365combinedindex", text: "M365 Combined Index" },
+      { key: "m365index", text: "M365 Combined Index" },
       { key: "commerceindex", text: "Commerce Index" },
       { key: "exchangeoutlookindex", text: "Exchange Outlook Index" },
       { key: "mdoindex", text: "MDO Index" },
       { key: "odspindex", text: "ODSP Index" },
-      { key: "pureviewindex", text: "Pureview Index" },
+      { key: "purviewindex", text: "Purview Index" },
       { key: "teamsindex", text: "Teams Index" },
     ];
 
@@ -183,8 +183,9 @@ const Chat = () => {
                     {!lastQuestionRef.current ? (
                         <div className={styles.chatEmptyState}>
                             
-                            <h1 className={styles.chatEmptyStateTitle}>Chat with your data</h1>
-                            <h2 className={styles.chatEmptyStateSubtitle}>Hi! Ask anything about your data.</h2>
+                            <h1 className={styles.chatEmptyStateTitle}>Ask question to start.</h1>
+                            <h2 className={styles.chatEmptyStateSubtitle}><i>"Entering personally identifiable information (PII) and customer data is strictly forbidden."</i></h2>
+                            <img src="/MWLogo.PNG" height="233" width="233"></img>
                         </div>
                     ) : (
                         <div className={styles.chatMessageStream}>
