@@ -29,16 +29,16 @@ enum Tabs {
 const Chat = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(true);
-    const [acsIndexDropDownItem, setacsIndexDropDownItem] = useState<IDropdownOption>();
+    const [acsIndex, setacsIndex] = useState<string>("m365combinedindex");
 
     const acsIndexOptions: IDropdownOption[] = [
-        { key: 'm365combinedindex', text: 'M365 Combined Index'},
-        {key: 'commerceindex', text: 'Commerce Index'},
-        {key: 'exchangeoutlookindex', text: 'Exchange Outlook Index'},
-        {key: 'mdoindex', text: 'MDO Index'},
-        {key: 'odspindex', text: 'ODSP Index'},
-        {key: 'pureviewindex', text: 'Pureview Index'},
-        {key: 'teamsindex', text: 'Teams Index'}
+      { key: "m365combinedindex", text: "M365 Combined Index" },
+      { key: "commerceindex", text: "Commerce Index" },
+      { key: "exchangeoutlookindex", text: "Exchange Outlook Index" },
+      { key: "mdoindex", text: "MDO Index" },
+      { key: "odspindex", text: "ODSP Index" },
+      { key: "pureviewindex", text: "Pureview Index" },
+      { key: "teamsindex", text: "Teams Index" },
     ];
 
     const lastQuestionRef = useRef<string>("");
@@ -83,7 +83,7 @@ const Chat = () => {
             const request: ConversationRequest = {
                 messages: [...prevMessages, userMessage],
                 settings: {
-                    acs_index: acsIndexDropDownItem,
+                    acs_index: acsIndex,
                     in_domain_only: enableInDomainOnly
                 }
             };
@@ -158,8 +158,10 @@ const Chat = () => {
         console.log("Dislike response", answer[0]);
     };
 
-    const onACSIndexDropDownChanged = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption<any> | undefined, index?: number | undefined): void => {
-        setacsIndexDropDownItem(option);
+    const onACSIndexDropDownChanged = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption | undefined, index?: number | undefined): void => {
+        if (option) {
+            setacsIndex(option.key.toString());
+        }
     }
 
 
@@ -271,7 +273,7 @@ const Chat = () => {
                     >
                     <Dropdown
                         className={styles.chatSettingsSeparator}
-                        selectedKey={ acsIndexDropDownItem ? acsIndexDropDownItem.key : 'm365combinedindex'}
+                        selectedKey={ acsIndex }
                         options={acsIndexOptions}
                         label="Product"
                         onChange={onACSIndexDropDownChanged}
