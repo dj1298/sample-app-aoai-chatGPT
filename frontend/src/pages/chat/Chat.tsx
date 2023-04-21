@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Pivot, PivotItem } from "@fluentui/react";
+import { Pivot, PivotItem, Checkbox, Panel, DefaultButton, TextField, Dropdown, IDropdownOption, DropdownMenuItemType, ExtendedSelectedItem } from "@fluentui/react";
 import { Sparkle28Filled } from "@fluentui/react-icons";
 
 import styles from "./Chat.module.css";
@@ -18,6 +18,7 @@ import { Answer } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
 import { SupportingContent } from "../../components/SupportingContent";
 import { ClearChatButton } from "../../components/ClearChatButton";
+import { SettingsButton } from "../../components/SettingsButton";
 
 enum Tabs {
     ThoughtProcessTab = "thoughtProcess",
@@ -26,6 +27,20 @@ enum Tabs {
 }
 
 const Chat = () => {
+    const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
+    const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(true);
+    const [acsIndexDropDownItem, setacsIndexDropDownItem] = useState<IDropdownOption>();
+
+    const acsIndexOptions: IDropdownOption[] = [
+        { key: 'm365combinedindex', text: 'M365 Combined Index'},
+        {key: 'commerceindex', text: 'Commerce Index'},
+        {key: 'exchangeoutlookindex', text: 'Exchange Outlook Index'},
+        {key: 'mdoindex', text: 'MDO Index'},
+        {key: 'odspindex', text: 'ODSP Index'},
+        {key: 'pureviewindex', text: 'Pureview Index'},
+        {key: 'teamsindex', text: 'Teams Index'}
+    ];
+
     const lastQuestionRef = useRef<string>("");
     const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null);
 
@@ -66,7 +81,11 @@ const Chat = () => {
             };
 
             const request: ConversationRequest = {
-                messages: [...prevMessages, userMessage]
+                messages: [...prevMessages, userMessage],
+                settings: {
+                    acs_index: acsIndexDropDownItem,
+                    in_domain_only: enableInDomainOnly
+                }
             };
 
             const result = await conversationApi(request);
@@ -139,6 +158,15 @@ const Chat = () => {
         console.log("Dislike response", answer[0]);
     };
 
+    const onACSIndexDropDownChanged = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption<any> | undefined, index?: number | undefined): void => {
+        setacsIndexDropDownItem(option);
+    }
+
+
+    const onInDomainOnlyChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setEnableInDomainOnly(checked || false);
+    }
+
 
     const isDisabledCitationTab: boolean = !activeCitation;
 
@@ -146,6 +174,7 @@ const Chat = () => {
         <div className={styles.container}>
             <div className={styles.commandsContainer}>
                 <ClearChatButton className={styles.commandButton} onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
+                <SettingsButton className={styles.commandButton} onClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)} />
             </div>
             <div className={styles.chatRoot}>
                 <div className={styles.chatContainer}>
@@ -230,6 +259,41 @@ const Chat = () => {
                         </PivotItem>
                     </Pivot>
                 )}
+
+                    <Panel
+                    headerText="Configure Resources"
+                    isOpen={isConfigPanelOpen}
+                    isBlocking={false}
+                    onDismiss={() => setIsConfigPanelOpen(false)}
+                    closeButtonAriaLabel="Close"
+                    onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>Close</DefaultButton>}
+                    isFooterAtBottom={true}
+                    >
+                    <Dropdown
+                        className={styles.chatSettingsSeparator}
+                        selectedKey={ acsIndexDropDownItem ? acsIndexDropDownItem.key : 'm365combinedindex'}
+                        options={acsIndexOptions}
+                        label="Product"
+                        onChange={onACSIndexDropDownChanged}
+                        
+                    />
+                    <Checkbox
+                        className={styles.chatSettingsSeparator}
+                        checked={enableInDomainOnly}
+                        label="Answer in-domain questions only"
+                        onChange={onInDomainOnlyChanged}
+                    />
+                    {/* <SpinButton
+                        className={styles.chatSettingsSeparator}
+                        label="Retrieve this many documents from search:"
+                        min={1}
+                        max={50}
+                        // defaultValue={}
+                        // onChange={}
+                    /> */}
+                    
+                    
+                </Panel>
             </div>
         </div>
     );

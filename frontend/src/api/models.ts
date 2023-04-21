@@ -1,3 +1,5 @@
+import { IDropdownOption } from "@fluentui/react";
+
 export type AskResponse = {
     answer: string;
     thoughts: string | null;
@@ -30,8 +32,14 @@ export type ChatMessage = {
     content: MessageContent;
 };
 
+export type Settings = {
+    acs_index: IDropdownOption<any> | undefined;
+    in_domain_only: boolean | null;
+}
+
 export type ConversationRequest = {
     messages: ChatMessage[];
+    settings: Settings;
 };
 
 export const enum FeedbackString {

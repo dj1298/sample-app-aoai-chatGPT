@@ -44,6 +44,12 @@ def conversation():
             "top_p": AZURE_OPENAI_TOP_P,
             "max_tokens": AZURE_OPENAI_MAX_TOKENS
         }
+        
+        #settings = request.json["settings"]
+        #enable_in_domain = settings.get('in_domain_only', True)
+        #body["enable_Indomain"] = enable_in_domain
+
+        #azure_search_index = settings.get("acs_index")
 
         if AZURE_OPENAI_STOP_SEQUENCE:
             sequences = AZURE_OPENAI_STOP_SEQUENCE.split("|")

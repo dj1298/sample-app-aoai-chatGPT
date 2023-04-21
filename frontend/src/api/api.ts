@@ -7,7 +7,8 @@ export async function conversationApi(options: ConversationRequest): Promise<Cha
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            messages: options.messages
+            messages: options.messages,
+            settings: options.settings
         })
     });
 
