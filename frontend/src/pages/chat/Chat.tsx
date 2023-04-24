@@ -143,24 +143,10 @@ const Chat = () => {
 
     const onLikeResponse = (index: number) => {
         setIsFeedbackPanelOpen(!isFeedbackPanelOpen);
-        let answer = answers[index];
-        answer[4] = answer[4] === FeedbackString.ThumbsUp ? FeedbackString.Neutral : FeedbackString.ThumbsUp;
-        setAnswers([...answers.slice(0, index), answer, ...answers.slice(index + 1)]);
-        if (answer[4] === FeedbackString.ThumbsUp) {
-            makeFeedbackRequest(answer[0], answer[4]);
-        }
-        console.log("Liked response", answer[0]);
     };
 
     const onDislikeResponse = (index: number) => {
         setIsFeedbackPanelOpen(!isFeedbackPanelOpen);
-        let answer = answers[index];
-        answer[4] = answer[4] === FeedbackString.ThumbsDown ? FeedbackString.Neutral : FeedbackString.ThumbsDown;
-        setAnswers([...answers.slice(0, index), answer, ...answers.slice(index + 1)]);
-        if (answer[4] === FeedbackString.ThumbsDown) {
-            makeFeedbackRequest(answer[0], answer[4]);
-        }
-        console.log("Dislike response", answer[0]);
     };
 
     const onACSIndexDropDownChanged = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption | undefined, index?: number | undefined): void => {
