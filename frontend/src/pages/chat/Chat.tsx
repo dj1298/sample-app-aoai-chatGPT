@@ -120,6 +120,14 @@ const Chat = () => {
         setAnswers([]);
     };
 
+    const onLikeResponseClicked = (index: number) => {
+        setIsFeedbackPanelOpen(true);
+    };
+
+    const onDislikeResponseClicked = (index: number) => {
+        setIsFeedbackPanelOpen(true);
+    };
+
     useEffect(() => chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" }), [isLoading]);
 
     const onShowCitation = (citation: DocumentResult, index: number) => {
@@ -243,6 +251,8 @@ const Chat = () => {
                                                     top_docs: answer[3].top_docs
                                                 }}
                                                 onCitationClicked={c => onShowCitation(c, index)}
+                                                onLikeResponseClicked={() => onLikeResponse(index)}
+                                                onDislikeResponseClicked={() => onDislikeResponse(index)}
                                             />
                                         </div>
                                     )}
@@ -312,16 +322,16 @@ const Chat = () => {
                         <TextField label="(Optional)If answer is not correct, provide correct document link/path." multiline autoAdjustHeight onChange={onIncorrectAnswerChanged}/>
                         <TextField label="(Optional) Provide reason if rating is not 5." multiline autoAdjustHeight onChange={onNot5StarChanged}/>
                         <hr />
-                        <Checkbox label="Inaccurate" onChange={onInaccurateChanged} />
-                        <Checkbox label="Missing information" onChange={onMissingInfoChanged} />
-                        <Checkbox label="Too long" onChange={onTooLongChanged} />
-                        <Checkbox label="Too short" onChange={onTooShortChanged} />
-                        <Checkbox label="Confusing" onChange={onConfusingChanged} />
-                        <Checkbox label="Offensive" onChange={onOffensiveChanged} />
-                        <Checkbox label="Biased" onChange={onBiasedChanged} />
-                        <Checkbox label="Outdated" onChange={onOutdatedChanged} />
-                        <Checkbox label="Repetitive" onChange={onRepetitiveChanged} />
-                        <Checkbox label="Fantastic!" onChange={onFantasticChanged} />
+                        <Checkbox label="Inaccurate" className={styles.checkBox} onChange={onInaccurateChanged} />
+                        <Checkbox label="Missing information" className={styles.checkBox} onChange={onMissingInfoChanged} />
+                        <Checkbox label="Too long" className={styles.checkBox} onChange={onTooLongChanged} />
+                        <Checkbox label="Too short" className={styles.checkBox} onChange={onTooShortChanged} />
+                        <Checkbox label="Confusing" className={styles.checkBox} onChange={onConfusingChanged} />
+                        <Checkbox label="Offensive" className={styles.checkBox} onChange={onOffensiveChanged} />
+                        <Checkbox label="Biased" className={styles.checkBox} onChange={onBiasedChanged} />
+                        <Checkbox label="Outdated" className={styles.checkBox} onChange={onOutdatedChanged} />
+                        <Checkbox label="Repetitive" className={styles.checkBox} onChange={onRepetitiveChanged} />
+                        <Checkbox label="Fantastic!" className={styles.checkBox} onChange={onFantasticChanged} />
                         
                     </Panel>
 

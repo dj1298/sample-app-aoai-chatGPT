@@ -125,6 +125,11 @@
     margin-top: 15px;
 }
 
+.checkBox {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
 .loadingLogo {
     font-size: 28px;
 }
