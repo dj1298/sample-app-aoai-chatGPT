@@ -9,9 +9,6 @@ import {
     ConversationRequest,
     conversationApi,
     MessageContent,
-    FeedbackString,
-    FeedbackRequest,
-    feedbackApi,
     DocumentResult
 } from "../../api";
 import { Answer } from "../../components/Answer";
@@ -22,7 +19,6 @@ import { SettingsButton } from "../../components/SettingsButton";
 import { FeedbackButton } from "../../components/FeedbackButton";
 
 enum Tabs {
-    ThoughtProcessTab = "thoughtProcess",
     SupportingContentTab = "supportingContent",
     CitationTab = "citation"
 }
@@ -68,7 +64,7 @@ const Chat = () => {
     const [activeTab, setActiveTab] = useState<Tabs | undefined>(undefined);
 
     const [currentAnswer, setCurrentAnswer] = useState<number>(0);
-    const [answers, setAnswers] = useState<[message_id: string, parent_message_id: string, role: string, content: MessageContent, feedback: FeedbackString][]>(
+    const [answers, setAnswers] = useState<[message_id: string, parent_message_id: string, role: string, content: MessageContent][]>(
         []
     );
 
@@ -110,23 +106,12 @@ const Chat = () => {
 
             setAnswers([
                 ...answers,
-                [userMessage.message_id, userMessage.parent_message_id ?? "", userMessage.role, userMessage.content, FeedbackString.Neutral],
-                [result.message_id, result.parent_message_id ?? "", result.role, result.content, FeedbackString.Neutral]
+                [userMessage.message_id, userMessage.parent_message_id ?? "", userMessage.role, userMessage.content],
+                [result.message_id, result.parent_message_id ?? "", result.role, result.content]
             ]);
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const makeFeedbackRequest = async (message_id: string, feedback: FeedbackString) => {
-        const request: FeedbackRequest = {
-            message_id: message_id,
-            feedback: feedback
-        };
-
-        await feedbackApi(request);
-
-        return;
     };
 
     const clearChat = () => {
@@ -269,14 +254,9 @@ const Chat = () => {
                                                     answer: answer[3].parts[0],
                                                     thoughts: null,
                                                     data_points: [],
-                                                    feedback: answer[4],
                                                     top_docs: answer[3].top_docs
                                                 }}
                                                 onCitationClicked={c => onShowCitation(c, index)}
-                                                onThoughtProcessClicked={() => onToggleTab(Tabs.ThoughtProcessTab, index)}
-                                                onSupportingContentClicked={() => onToggleTab(Tabs.SupportingContentTab, index)}
-                                                onLikeResponseClicked={() => onLikeResponse(index)}
-                                                onDislikeResponseClicked={() => onDislikeResponse(index)}
                                             />
                                         </div>
                                     )}

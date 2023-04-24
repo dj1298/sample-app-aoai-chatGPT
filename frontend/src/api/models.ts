@@ -2,7 +2,6 @@ export type AskResponse = {
     answer: string;
     thoughts: string | null;
     data_points: string[];
-    feedback: string | null;
     top_docs: DocumentResult[];
     error?: string;
 };
@@ -45,15 +44,4 @@ export type MWFeedback = {
 export type ConversationRequest = {
     messages: ChatMessage[];
     settings: Settings;
-};
-
-export const enum FeedbackString {
-    ThumbsUp = "ThumbsUp",
-    ThumbsDown = "ThumbsDown",
-    Neutral = "Neutral"
-}
-
-export type FeedbackRequest = {
-    message_id: string;
-    feedback: FeedbackString;
 };
