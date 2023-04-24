@@ -35,6 +35,13 @@ export type Settings = {
     in_domain_only: boolean | null;
 }
 
+export type MWFeedback = {
+    overall_response_quality: number | null;
+    overall_document_quality: number | null;
+    
+
+}
+
 export type ConversationRequest = {
     messages: ChatMessage[];
     settings: Settings;

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Pivot, PivotItem, Checkbox, Panel, DefaultButton, TextField, Dropdown, IDropdownOption, DropdownMenuItemType, ExtendedSelectedItem } from "@fluentui/react";
+import { Pivot, PivotItem, Checkbox, Panel, DefaultButton, TextField, Dropdown, IDropdownOption, DropdownMenuItemType, ExtendedSelectedItem, Slider } from "@fluentui/react";
 import { Sparkle28Filled } from "@fluentui/react-icons";
 
 import styles from "./Chat.module.css";
@@ -19,6 +19,7 @@ import { QuestionInput } from "../../components/QuestionInput";
 import { SupportingContent } from "../../components/SupportingContent";
 import { ClearChatButton } from "../../components/ClearChatButton";
 import { SettingsButton } from "../../components/SettingsButton";
+import { FeedbackButton } from "../../components/FeedbackButton";
 
 enum Tabs {
     ThoughtProcessTab = "thoughtProcess",
@@ -28,7 +29,24 @@ enum Tabs {
 
 const Chat = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
+    const [isFeedbackPanelOpen, setIsFeedbackPanelOpen] = useState(false);
     const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(true);
+    
+    const [feedbackOverallResponseQuality, setFeedbackOverallResponseQuality] = useState<number>(3);
+    const [feedbackOverallDocumentQuality, setFeedbackOverallDocumentQuality] = useState<number>(3);
+    const [feedbackIncorrectAnswer, setFeedbackIncorrectAnswer] = useState<string>();
+    const [feedbackNot5Star, setFeedbackNot5Star] = useState<string>();
+    const [feedbackInaccurate, setFeedbackInaccurate] = useState<boolean>(false);
+    const [feedbackMissingInfo, setFeedbackMissingInfo] = useState<boolean>(false);
+    const [feedbackTooLong, setFeedbackTooLong] = useState<boolean>(false);
+    const [feedbackTooShort, setFeedbackTooShort] = useState<boolean>(false);
+    const [feedbackConfusing, setFeedbackConfusing] = useState<boolean>(false);
+    const [feedbackOffensive, setFeedbackOffensive] = useState<boolean>(false);
+    const [feedbackBiased, setFeedbackBiased] = useState<boolean>(false);
+    const [feedbackOutdated, setFeedbackOutdated] = useState<boolean>(false);
+    const [feedbackRepetitive, setFeedbackRepetitive] = useState<boolean>(false);
+    const [feedbackFantastic, setFeedbackFantastic] = useState<boolean>(false);
+
     const [acsIndex, setacsIndex] = useState<string>("m365index");
 
     const acsIndexOptions: IDropdownOption[] = [
@@ -139,6 +157,7 @@ const Chat = () => {
     };
 
     const onLikeResponse = (index: number) => {
+        setIsFeedbackPanelOpen(!isFeedbackPanelOpen);
         let answer = answers[index];
         answer[4] = answer[4] === FeedbackString.ThumbsUp ? FeedbackString.Neutral : FeedbackString.ThumbsUp;
         setAnswers([...answers.slice(0, index), answer, ...answers.slice(index + 1)]);
@@ -149,6 +168,7 @@ const Chat = () => {
     };
 
     const onDislikeResponse = (index: number) => {
+        setIsFeedbackPanelOpen(!isFeedbackPanelOpen);
         let answer = answers[index];
         answer[4] = answer[4] === FeedbackString.ThumbsDown ? FeedbackString.Neutral : FeedbackString.ThumbsDown;
         setAnswers([...answers.slice(0, index), answer, ...answers.slice(index + 1)]);
@@ -167,6 +187,53 @@ const Chat = () => {
 
     const onInDomainOnlyChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
         setEnableInDomainOnly(checked || false);
+    }
+
+    const onOverallResponseQualityChanged = (value: number, range?: [number, number]) => {
+        setFeedbackOverallResponseQuality(value || 3);
+    }
+
+    const onOverallDocumentQualityChanged = (value: number, range?: [number, number]) => {
+        setFeedbackOverallResponseQuality(value || 3);
+    }
+
+    const onIncorrectAnswerChanged = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+        setFeedbackIncorrectAnswer(newValue || "");
+    }
+
+    const onNot5StarChanged = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+        setFeedbackNot5Star(newValue || "");
+    }
+
+    const onInaccurateChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackInaccurate(checked || false);
+    }
+    const onMissingInfoChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackMissingInfo(checked || false);
+    }
+    const onTooLongChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackTooLong(checked || false);
+    }
+    const onTooShortChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackTooShort(checked || false);
+    }
+    const onConfusingChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackConfusing(checked || false);
+    }
+    const onOffensiveChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackOffensive(checked || false);
+    }
+    const onBiasedChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackBiased(checked || false);
+    }
+    const onOutdatedChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackOutdated(checked || false);
+    }
+    const onRepetitiveChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackRepetitive(checked || false);
+    }
+    const onFantasticChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
+        setFeedbackFantastic(checked || false);
     }
 
 
@@ -262,6 +329,35 @@ const Chat = () => {
                         </PivotItem>
                     </Pivot>
                 )}
+
+                    <Panel
+                    headerText="Feedback"
+                    isOpen={isFeedbackPanelOpen}
+                    isBlocking={false}
+                    onDismiss={() => setIsFeedbackPanelOpen(false)}
+                    closeButtonAriaLabel="Close"
+                    onRenderFooterContent={() => <DefaultButton onClick={() => setIsFeedbackPanelOpen(false)}>Close</DefaultButton>}
+                    isFooterAtBottom={true}
+                    >
+                        <Slider ranged label="Overall response quality" max={5} defaultValue={3} onChange={onOverallResponseQualityChanged}/>
+                        <br />
+                        <Slider ranged label="Overall document quality" max={5} defaultValue={3} onChange={onOverallDocumentQualityChanged}/>
+                        <hr />
+                        <TextField label="(Optional)If answer is not correct, provide correct document link/path." multiline autoAdjustHeight />
+                        <TextField label="(Optional) Provide reason if rating is not 5." multiline autoAdjustHeight/>
+                        <hr />
+                        <Checkbox label="Inaccurate" onChange={onInaccurateChanged} />
+                        <Checkbox label="Missing information" onChange={onMissingInfoChanged} />
+                        <Checkbox label="Too long" onChange={onTooLongChanged} />
+                        <Checkbox label="Too short" onChange={onTooShortChanged} />
+                        <Checkbox label="Confusing" onChange={onConfusingChanged} />
+                        <Checkbox label="Offensive" onChange={onOffensiveChanged} />
+                        <Checkbox label="Biased" onChange={onBiasedChanged} />
+                        <Checkbox label="Outdated" onChange={onOutdatedChanged} />
+                        <Checkbox label="Repetitive" onChange={onRepetitiveChanged} />
+                        <Checkbox label="Fantastic!" onChange={onFantasticChanged} />
+                        
+                    </Panel>
 
                     <Panel
                     headerText="Configure Resources"
