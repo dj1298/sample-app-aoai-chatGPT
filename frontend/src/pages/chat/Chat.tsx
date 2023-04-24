@@ -339,12 +339,12 @@ const Chat = () => {
                     onRenderFooterContent={() => <DefaultButton onClick={() => setIsFeedbackPanelOpen(false)}>Close</DefaultButton>}
                     isFooterAtBottom={true}
                     >
-                        <Slider ranged label="Overall response quality" max={5} defaultValue={3} onChange={onOverallResponseQualityChanged}/>
+                        <Slider label="Overall response quality" min={0} max={5} defaultValue={3} onChange={onOverallResponseQualityChanged}/>
                         <br />
-                        <Slider ranged label="Overall document quality" max={5} defaultValue={3} onChange={onOverallDocumentQualityChanged}/>
+                        <Slider label="Overall document quality" min={0} max={5} defaultValue={3} onChange={onOverallDocumentQualityChanged}/>
                         <hr />
-                        <TextField label="(Optional)If answer is not correct, provide correct document link/path." multiline autoAdjustHeight />
-                        <TextField label="(Optional) Provide reason if rating is not 5." multiline autoAdjustHeight/>
+                        <TextField label="(Optional)If answer is not correct, provide correct document link/path." multiline autoAdjustHeight onChange={onIncorrectAnswerChanged}/>
+                        <TextField label="(Optional) Provide reason if rating is not 5." multiline autoAdjustHeight onChange={onNot5StarChanged}/>
                         <hr />
                         <Checkbox label="Inaccurate" onChange={onInaccurateChanged} />
                         <Checkbox label="Missing information" onChange={onMissingInfoChanged} />
