@@ -16,7 +16,6 @@ import { QuestionInput } from "../../components/QuestionInput";
 import { SupportingContent } from "../../components/SupportingContent";
 import { ClearChatButton } from "../../components/ClearChatButton";
 import { SettingsButton } from "../../components/SettingsButton";
-import { FeedbackButton } from "../../components/FeedbackButton";
 import { SettingsPanel } from "../../components/SettingsPanel/SettingsPanel";
 import { Settings } from "../../api/mw.models";
 import { FeedbackPanel } from "../../components/FeedbackPanel/FeedbackPanel";
@@ -137,7 +136,6 @@ const Chat = () => {
                 <div className={styles.chatContainer}>
                     {!lastQuestionRef.current ? (
                         <div className={styles.chatEmptyState}>
-                            
                             <h1 className={styles.chatEmptyStateTitle}>Ask question to start.</h1>
                             <h2 className={styles.chatEmptyStateSubtitle}><i>"Entering personally identifiable information (PII) and customer data is strictly forbidden."</i></h2>
                             <img src="/MWLogo.PNG" height="233" width="233"></img>

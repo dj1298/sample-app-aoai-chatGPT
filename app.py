@@ -2,6 +2,7 @@ import os
 import logging
 import requests
 from flask import Flask, request, jsonify
+from mwapp import mw_blueprint;
 
 app = Flask(__name__)
 
@@ -150,9 +151,7 @@ def conversation():
         logging.exception("Exception in /conversation")
         return jsonify({"error": str(e)}), 500
 
-@app.route("/feedback", methods=["POST"])
-def feedback():
-    return jsonify({"success": True, "feedback": request.get_json()})
+app.register_blueprint(mw_blueprint)
 
 if __name__ == "__main__":
     app.run()
