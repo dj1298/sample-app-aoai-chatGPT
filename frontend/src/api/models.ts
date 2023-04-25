@@ -1,3 +1,5 @@
+import { Settings } from "./mw.models";
+
 export type AskResponse = {
     answer: string;
     thoughts: string | null;
@@ -28,11 +30,6 @@ export type ChatMessage = {
     role: string;
     content: MessageContent;
 };
-
-export type Settings = {
-    acs_index: string | null;
-    in_domain_only: boolean | null;
-}
 
 export type MWFeedback = {
     overall_response_quality: number | null;
