@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Pivot, PivotItem, Checkbox, Panel, DefaultButton, TextField, Dropdown, IDropdownOption, DropdownMenuItemType, ExtendedSelectedItem, Slider } from "@fluentui/react";
+import { Pivot, PivotItem } from "@fluentui/react";
 import { Sparkle28Filled } from "@fluentui/react-icons";
 
 import styles from "./Chat.module.css";
@@ -19,6 +19,7 @@ import { SettingsButton } from "../../components/SettingsButton";
 import { FeedbackButton } from "../../components/FeedbackButton";
 import { SettingsPanel } from "../../components/SettingsPanel/SettingsPanel";
 import { Settings } from "../../api/mw.models";
+import { FeedbackPanel } from "../../components/FeedbackPanel/FeedbackPanel";
 
 enum Tabs {
     SupportingContentTab = "supportingContent",
@@ -32,22 +33,6 @@ const Chat = () => {
         acs_index: "m365index",
         in_domain_only: true,
     });
-    
-    const [feedbackOverallResponseQuality, setFeedbackOverallResponseQuality] = useState<number>(3);
-    const [feedbackOverallDocumentQuality, setFeedbackOverallDocumentQuality] = useState<number>(3);
-    const [feedbackIncorrectAnswer, setFeedbackIncorrectAnswer] = useState<string>();
-    const [feedbackNot5Star, setFeedbackNot5Star] = useState<string>();
-    const [feedbackInaccurate, setFeedbackInaccurate] = useState<boolean>(false);
-    const [feedbackMissingInfo, setFeedbackMissingInfo] = useState<boolean>(false);
-    const [feedbackTooLong, setFeedbackTooLong] = useState<boolean>(false);
-    const [feedbackTooShort, setFeedbackTooShort] = useState<boolean>(false);
-    const [feedbackConfusing, setFeedbackConfusing] = useState<boolean>(false);
-    const [feedbackOffensive, setFeedbackOffensive] = useState<boolean>(false);
-    const [feedbackBiased, setFeedbackBiased] = useState<boolean>(false);
-    const [feedbackOutdated, setFeedbackOutdated] = useState<boolean>(false);
-    const [feedbackRepetitive, setFeedbackRepetitive] = useState<boolean>(false);
-    const [feedbackFantastic, setFeedbackFantastic] = useState<boolean>(false);
-    const [feedbackCaseNumber, setFeedbackCaseNumber] = useState<string>();
 
     const lastQuestionRef = useRef<string>("");
     const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null);
@@ -111,14 +96,6 @@ const Chat = () => {
         setAnswers([]);
     };
 
-    const onLikeResponseClicked = (index: number) => {
-        setIsFeedbackPanelOpen(true);
-    };
-
-    const onDislikeResponseClicked = (index: number) => {
-        setIsFeedbackPanelOpen(true);
-    };
-
     useEffect(() => chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" }), [isLoading]);
 
     const onShowCitation = (citation: DocumentResult, index: number) => {
@@ -147,56 +124,6 @@ const Chat = () => {
     const onDislikeResponse = (index: number) => {
         setIsFeedbackPanelOpen(!isFeedbackPanelOpen);
     };
-
-    const onOverallResponseQualityChanged = (value: number, range?: [number, number]) => {
-        setFeedbackOverallResponseQuality(value || 3);
-    }
-
-    const onOverallDocumentQualityChanged = (value: number, range?: [number, number]) => {
-        setFeedbackOverallResponseQuality(value || 3);
-    }
-
-    const onIncorrectAnswerChanged = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-        setFeedbackIncorrectAnswer(newValue || "");
-    }
-
-    const onNot5StarChanged = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-        setFeedbackNot5Star(newValue || "");
-    }
-
-    const onInaccurateChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackInaccurate(checked || false);
-    }
-    const onMissingInfoChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackMissingInfo(checked || false);
-    }
-    const onTooLongChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackTooLong(checked || false);
-    }
-    const onTooShortChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackTooShort(checked || false);
-    }
-    const onConfusingChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackConfusing(checked || false);
-    }
-    const onOffensiveChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackOffensive(checked || false);
-    }
-    const onBiasedChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackBiased(checked || false);
-    }
-    const onOutdatedChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackOutdated(checked || false);
-    }
-    const onRepetitiveChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackRepetitive(checked || false);
-    }
-    const onFantasticChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
-        setFeedbackFantastic(checked || false);
-    }
-    const onCaseNumberChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, caseNumber?: string) => {
-        setFeedbackCaseNumber(caseNumber || "");
-    }
 
     const isDisabledCitationTab: boolean = !activeCitation;
 
@@ -288,36 +215,8 @@ const Chat = () => {
                     </Pivot>
                 )}
 
-                    <Panel
-                    headerText="Feedback"
-                    isOpen={isFeedbackPanelOpen}
-                    isBlocking={false}
-                    onDismiss={() => setIsFeedbackPanelOpen(false)}
-                    closeButtonAriaLabel="Close"
-                    onRenderFooterContent={() => <DefaultButton onClick={() => setIsFeedbackPanelOpen(false)}>Close</DefaultButton>}
-                    isFooterAtBottom={true}
-                    >
-                        <Slider label="Overall response quality" min={0} max={5} defaultValue={3} onChange={onOverallResponseQualityChanged}/>
-                        <br />
-                        <Slider label="Overall document quality" min={0} max={5} defaultValue={3} onChange={onOverallDocumentQualityChanged}/>
-                        <hr />
-                        <TextField label="(Optional)If answer is not correct, provide correct document link/path." multiline autoAdjustHeight onChange={onIncorrectAnswerChanged}/>
-                        <TextField label="(Optional) Provide reason if rating is not 5." multiline autoAdjustHeight onChange={onNot5StarChanged}/>
-                        <hr />
-                        <Checkbox label="Inaccurate" className={styles.checkBox} onChange={onInaccurateChanged} />
-                        <Checkbox label="Missing information" className={styles.checkBox} onChange={onMissingInfoChanged} />
-                        <Checkbox label="Too long" className={styles.checkBox} onChange={onTooLongChanged} />
-                        <Checkbox label="Too short" className={styles.checkBox} onChange={onTooShortChanged} />
-                        <Checkbox label="Confusing" className={styles.checkBox} onChange={onConfusingChanged} />
-                        <Checkbox label="Offensive" className={styles.checkBox} onChange={onOffensiveChanged} />
-                        <Checkbox label="Biased" className={styles.checkBox} onChange={onBiasedChanged} />
-                        <Checkbox label="Outdated" className={styles.checkBox} onChange={onOutdatedChanged} />
-                        <Checkbox label="Repetitive" className={styles.checkBox} onChange={onRepetitiveChanged} />
-                        <Checkbox label="Fantastic!" className={styles.checkBox} onChange={onFantasticChanged} />
-                        <TextField label="Case number" className={styles.TextField} onChange={onCaseNumberChanged} />
-                        
-                    </Panel>
-                    <SettingsPanel isOpen={isConfigPanelOpen} onSettingsChanged={(newSettings) => setSettings(newSettings)} onDismiss={() => setIsConfigPanelOpen(false)} />
+                <FeedbackPanel isOpen={isFeedbackPanelOpen} onDismiss={() => setIsFeedbackPanelOpen(false)} />
+                <SettingsPanel isOpen={isConfigPanelOpen} onSettingsChanged={(newSettings) => setSettings(newSettings)} onDismiss={() => setIsConfigPanelOpen(false)} />
             </div>
         </div>
     );

@@ -150,5 +150,9 @@ def conversation():
         logging.exception("Exception in /conversation")
         return jsonify({"error": str(e)}), 500
 
+@app.route("/feedback", methods=["POST"])
+def feedback():
+    return jsonify({"success": True, "feedback": request.get_json()})
+
 if __name__ == "__main__":
     app.run()
