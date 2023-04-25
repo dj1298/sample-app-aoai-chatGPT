@@ -42,6 +42,7 @@ const Chat = () => {
     const [feedbackOutdated, setFeedbackOutdated] = useState<boolean>(false);
     const [feedbackRepetitive, setFeedbackRepetitive] = useState<boolean>(false);
     const [feedbackFantastic, setFeedbackFantastic] = useState<boolean>(false);
+    const [feedbackCaseNumber, setFeedbackCaseNumber] = useState<string>();
 
     const [acsIndex, setacsIndex] = useState<string>("m365index");
 
@@ -214,7 +215,9 @@ const Chat = () => {
     const onFantasticChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean)  => {
         setFeedbackFantastic(checked || false);
     }
-
+    const onCaseNumberChanged = (_ev?: React.FormEvent<HTMLElement | HTMLInputElement>, caseNumber?: string) => {
+        setFeedbackCaseNumber(caseNumber || "");
+    }
 
     const isDisabledCitationTab: boolean = !activeCitation;
 
@@ -332,6 +335,7 @@ const Chat = () => {
                         <Checkbox label="Outdated" className={styles.checkBox} onChange={onOutdatedChanged} />
                         <Checkbox label="Repetitive" className={styles.checkBox} onChange={onRepetitiveChanged} />
                         <Checkbox label="Fantastic!" className={styles.checkBox} onChange={onFantasticChanged} />
+                        <TextField label="Case number" className={styles.TextField} onChange={onCaseNumberChanged} />
                         
                     </Panel>
 

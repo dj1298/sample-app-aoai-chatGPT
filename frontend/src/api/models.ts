@@ -49,6 +49,7 @@ export type MWFeedback = {
     outdated: boolean | null;
     repetitive: boolean | null;
     fantastic: boolean | null;
+    case_number: number | null;
 
 }
 
