@@ -214,7 +214,17 @@ const Chat = () => {
                 )}
 
                 <FeedbackPanel isOpen={isFeedbackPanelOpen} onDismiss={() => setIsFeedbackPanelOpen(false)} />
-                <SettingsPanel isOpen={isConfigPanelOpen} onSettingsChanged={(newSettings) => setSettings(newSettings)} onDismiss={() => setIsConfigPanelOpen(false)} />
+                <SettingsPanel
+                    isOpen={isConfigPanelOpen}
+                    onSettingsChanged={(newSettings) => {
+                        if (settings.acs_index !== newSettings.acs_index) {
+                            clearChat();
+                        }
+
+                        setSettings(newSettings);
+                    }}
+                    onDismiss={() => setIsConfigPanelOpen(false)}
+                />
             </div>
         </div>
     );

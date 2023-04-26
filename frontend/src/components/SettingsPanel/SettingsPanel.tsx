@@ -41,15 +41,20 @@ export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettin
     setEnableInDomainOnly(checked || false);
   };
 
+  const handleDismiss = () => {
+    onSettingsChanged({ acs_index: acsIndex, in_domain_only: enableInDomainOnly});
+    onDismiss();
+  }
+
   return (
     <Panel
       headerText="Configure Resources"
       isOpen={isOpen}
       isBlocking={false}
-      onDismiss={onDismiss}
+      onDismiss={handleDismiss}
       closeButtonAriaLabel="Close"
       onRenderFooterContent={() => (
-        <DefaultButton onClick={onDismiss}>
+        <DefaultButton onClick={handleDismiss}>
           Close
         </DefaultButton>
       )}
