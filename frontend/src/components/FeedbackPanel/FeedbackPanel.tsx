@@ -15,7 +15,6 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({ isOpen, onDismiss
         overall_response_quality: 3,
         overall_document_quality: 3,
         incorrect_answer: "",
-        not_5_star: "",
         inaccurate_answer: false,
         missing_info: false,
         too_long: false,
@@ -66,16 +65,10 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({ isOpen, onDismiss
             />
             <hr />
             <TextField
-                label="(Optional)If answer is not correct, provide correct document link/path."
+                label="Additional feedback - provide details on citations and answer quality."
                 multiline
                 autoAdjustHeight
                 onChange={(_ev, value) => setFeedback({ ...feedback, incorrect_answer: value ?? "" })}
-            />
-            <TextField
-                label="(Optional) Provide reason if rating is not 5."
-                multiline
-                autoAdjustHeight
-                onChange={(_ev, value) => setFeedback({ ...feedback, not_5_star: value ?? "" })}
             />
             <hr />
             <Checkbox

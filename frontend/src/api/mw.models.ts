@@ -7,7 +7,6 @@ export type MWFeedback = {
     overall_response_quality: number | null;
     overall_document_quality: number | null;
     incorrect_answer: string | null;
-    not_5_star: string | null;
     inaccurate_answer: boolean | null;
     missing_info: boolean | null;
     too_long: boolean | null;

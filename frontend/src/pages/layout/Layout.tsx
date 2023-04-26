@@ -35,8 +35,8 @@ const Layout = () => {
                                 </Link>
                             </li>
                             <li>
-                                <NavLink to="https://aka.ms/MWGPTFeedback" target="_blank" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
-                                    Old Feedback Form
+                                <NavLink to="https://aka.ms/HowToUseMWGPT" target="_blank" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
+                                    Help
                                 </NavLink>
                             </li>
                         </ul>
