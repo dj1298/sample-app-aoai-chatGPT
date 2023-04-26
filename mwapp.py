@@ -58,7 +58,7 @@ def feedback():
 
 # PII Scrubbing
 
-analyzer = AnalyzerEngine()
+analyzer = AnalyzerEngine(nlp_engine="en_core_web_sm")
 anonymizer = AnonymizerEngine()
 
 def anonymize(text):
