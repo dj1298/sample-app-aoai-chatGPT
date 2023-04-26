@@ -4,7 +4,6 @@ from flask import Blueprint, request, jsonify
 from azure.cosmosdb.table.tableservice import TableService
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
-import spacy
 
 # Create a blueprint instance
 mw_blueprint = Blueprint('mw', __name__)
@@ -58,14 +57,6 @@ def feedback():
     return jsonify({"success": True, "feedback": json})
 
 # PII Scrubbing
-
-# Check if en_core_web_lg pipeline is installed, and install it if necessary
-if not spacy.util.is_package("en_core_web_lg"):
-    print("Downloading en_core_web_lg...")
-    spacy.cli.download("en_core_web_lg")
-
-# Load the pipeline
-nlp = spacy.load("en_core_web_lg")
 
 analyzer = AnalyzerEngine()
 anonymizer = AnonymizerEngine()
