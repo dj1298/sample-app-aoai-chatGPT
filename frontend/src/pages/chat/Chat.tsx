@@ -27,6 +27,7 @@ enum Tabs {
 
 const Chat = () => {
     const [isFeedbackPanelOpen, setIsFeedbackPanelOpen] = useState(false);
+    const [feedbackMessageIndex, setFeedbackMessageIndex] = useState(-1);
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [settings, setSettings] = useState<Settings>({
         acs_index: "m365index",
@@ -117,10 +118,12 @@ const Chat = () => {
     };
 
     const onLikeResponse = (index: number) => {
+        setFeedbackMessageIndex(index);
         setIsFeedbackPanelOpen(!isFeedbackPanelOpen);
     };
 
     const onDislikeResponse = (index: number) => {
+        setFeedbackMessageIndex(index);
         setIsFeedbackPanelOpen(!isFeedbackPanelOpen);
     };
 
@@ -213,7 +216,14 @@ const Chat = () => {
                     </Pivot>
                 )}
 
-                <FeedbackPanel isOpen={isFeedbackPanelOpen} onDismiss={() => setIsFeedbackPanelOpen(false)} />
+                <FeedbackPanel
+                    isOpen={isFeedbackPanelOpen}
+                    onDismiss={() => setIsFeedbackPanelOpen(false)}
+                    selectedContentIndex={settings.acs_index ?? ""}
+                    feedbackMessageIndex={feedbackMessageIndex}
+                    chatMessages={answers}
+                    inDomain={settings.in_domain_only ?? false}
+                />
                 <SettingsPanel
                     isOpen={isConfigPanelOpen}
                     onSettingsChanged={(newSettings) => {

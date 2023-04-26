@@ -1,20 +1,32 @@
 import { Button, Checkbox, DefaultButton, Panel, PrimaryButton, Slider, TextField } from "@fluentui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { feedbackApi } from "../../api/mw.api";
 
 import styles from "./FeedbackPanel.module.css";
-import { MWFeedback } from "../../api/mw.models";
+import { MWDocFeedback, MWFeedback } from "../../api/mw.models";
+import { MessageContent } from "../../api";
 
 export interface IFeedbackPanelProps {
     isOpen: boolean;
     onDismiss: () => void;
+    feedbackMessageIndex: number;
+    chatMessages: [message_id: string, parent_message_id: string, role: string, content: MessageContent][];
+    selectedContentIndex: string;
+    inDomain: boolean;
 }
 
-export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({ isOpen, onDismiss }) => {
+export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
+    isOpen,
+    onDismiss,
+    feedbackMessageIndex,
+    chatMessages,
+    selectedContentIndex,
+    inDomain,
+}) => {
     const [feedback, setFeedback] = useState<MWFeedback>({
         overall_response_quality: 3,
         overall_document_quality: 3,
-        incorrect_answer: "",
+        verbatim: "",
         inaccurate_answer: false,
         missing_info: false,
         too_long: false,
@@ -26,7 +38,46 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({ isOpen, onDismiss
         repetitive: false,
         fantastic: false,
         case_number: "",
+        question_id: "",
+        question: "",
+        answer_id: "",
+        answer: "",
+        contentIndex: "",
+        top_docs: [],
+        in_domain: inDomain,
     });
+
+    useEffect(() => {
+        let questionId = "";
+        let question = "";
+        let answerId = "";
+        let answer = "";
+        let topDocs: MWDocFeedback[] = [];
+
+        if (feedbackMessageIndex >= 1) {
+            questionId = chatMessages[feedbackMessageIndex - 1][0];
+            question = chatMessages[feedbackMessageIndex - 1][3].parts.join("\n");
+
+            answerId = chatMessages[feedbackMessageIndex][0];
+            answer = chatMessages[feedbackMessageIndex][3].parts.join("\n");
+
+            topDocs = chatMessages[feedbackMessageIndex][3].top_docs.map((d) => ({
+                title: d.title ?? "",
+                filepath: d.filepath ?? "",
+            }));
+        }
+
+        setFeedback({
+            ...feedback,
+            question_id: questionId,
+            question: question,
+            answer_id: answerId,
+            answer: answer,
+            contentIndex: selectedContentIndex,
+            top_docs: topDocs,
+            in_domain: inDomain,
+        });
+    }, [isOpen]);
 
     const onSubmit = () => {
         void feedbackApi(feedback);
@@ -50,17 +101,17 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({ isOpen, onDismiss
         >
             <Slider
                 label="Overall response quality"
-                min={0}
-                max={5}
-                defaultValue={3}
+                min={1}
+                max={3}
+                defaultValue={2}
                 onChange={(value) => setFeedback({ ...feedback, overall_response_quality: value })}
             />
             <br />
             <Slider
                 label="Overall document quality"
-                min={0}
-                max={5}
-                defaultValue={3}
+                min={1}
+                max={3}
+                defaultValue={2}
                 onChange={(value) => setFeedback({ ...feedback, overall_document_quality: value })}
             />
             <hr />
@@ -68,7 +119,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({ isOpen, onDismiss
                 label="Additional feedback - provide details on citations and answer quality."
                 multiline
                 autoAdjustHeight
-                onChange={(_ev, value) => setFeedback({ ...feedback, incorrect_answer: value ?? "" })}
+                onChange={(_ev, value) => setFeedback({ ...feedback, verbatim: value ?? "" })}
             />
             <hr />
             <Checkbox

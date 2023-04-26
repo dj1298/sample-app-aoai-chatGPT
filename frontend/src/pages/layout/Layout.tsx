@@ -3,18 +3,8 @@ import { Outlet, NavLink, Link } from "react-router-dom";
 import github from "../../assets/github.svg";
 
 import styles from "./Layout.module.css";
-import { FeedbackPanel } from "../../components/FeedbackPanel/FeedbackPanel";
-import { useState } from "react";
-import { mergeStyles } from "@fluentui/react";
-
-
 
 const Layout = () => {
-
-    const [isFeedbackOpen, setFeedbackOpen] = useState<boolean>(false);
-
-    const headerNavPageLinkStyle = mergeStyles(styles.headerNavPageLinkActive, styles.headerNavPageLink);
-
     return (
         <div className={styles.layout}>
             <header className={styles.header} role={"banner"}>
@@ -30,11 +20,6 @@ const Layout = () => {
                                 </NavLink>
                             </li>
                             <li>
-                                <Link to="" onClick={() => setFeedbackOpen(true)} className={headerNavPageLinkStyle}>
-                                    Feedback
-                                </Link>
-                            </li>
-                            <li>
                                 <NavLink to="https://aka.ms/HowToUseMWGPT" target="_blank" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
                                     Help
                                 </NavLink>
@@ -45,7 +30,6 @@ const Layout = () => {
             </header>
             <hr />
             <Outlet />
-            <FeedbackPanel isOpen={isFeedbackOpen} onDismiss={() => setFeedbackOpen(false)} />
         </div>
     );
 };

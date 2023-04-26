@@ -16,14 +16,15 @@ if (TABLE_SERVICE_CONNECTION_STRING):
 def feedback():
     json = request.get_json()
     id = uuid.uuid4()
-    username = request.headers.get('X-MS-CLIENT-PRINCIPAL-NAME')
+    username = request.headers.get("X-MS-CLIENT-PRINCIPAL-NAME")
+    topDocs = jsonify(json["top_docs"]).data.decode("utf-8")
     tableEntity = {
         "PartitionKey": "Global",
         "RowKey": str(id),
         "username": username,
         "overall_response_quality": json["overall_response_quality"],
         "overall_document_quality": json["overall_document_quality"],
-        "incorrect_answer": json["incorrect_answer"],
+        "verbatim": json["verbatim"],
         "inaccurate_answer": json["inaccurate_answer"],
         "missing_info": json["missing_info"],
         "too_long": json["too_long"],
@@ -35,6 +36,13 @@ def feedback():
         "repetitive": json["repetitive"],
         "fantastic": json["fantastic"],
         "case_number": json["case_number"],
+        "question_id": json["question_id"],
+        "question": json["question"],
+        "answer_id": json["answer_id"],
+        "answer": json["answer"],
+        "contentIndex": json["contentIndex"],
+        "top_docs": topDocs,
+        "in_domain": json["in_domain"],
     }
 
     if (table_service):
