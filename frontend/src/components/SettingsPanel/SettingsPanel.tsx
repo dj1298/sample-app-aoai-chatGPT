@@ -50,7 +50,7 @@ export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettin
     <Panel
       headerText="Configure Resources"
       isOpen={isOpen}
-      isBlocking={false}
+      isBlocking={true}
       onDismiss={handleDismiss}
       closeButtonAriaLabel="Close"
       onRenderFooterContent={() => (

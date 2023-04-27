@@ -88,7 +88,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
         <Panel
             headerText="Feedback"
             isOpen={isOpen}
-            isBlocking={false}
+            isBlocking={true}
             onDismiss={onDismiss}
             closeButtonAriaLabel="Close"
             onRenderFooterContent={() => (

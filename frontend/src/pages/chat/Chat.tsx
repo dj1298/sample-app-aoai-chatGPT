@@ -141,7 +141,6 @@ const Chat = () => {
                         <div className={styles.chatEmptyState}>
                             <h1 className={styles.chatEmptyStateTitle}>Ask question to start.</h1>
                             <h2 className={styles.chatEmptyStateSubtitle}><i>"Entering personally identifiable information (PII) and customer data is strictly forbidden."</i></h2>
-                            <h2 className={styles.chatEmptyStateSubtitle}><i>Microsoft Confidential</i></h2>
                             <img src="/MWLogo.PNG" height="233" width="233"></img>
                         </div>
                     ) : (
@@ -191,6 +190,7 @@ const Chat = () => {
                             disabled={isLoading}
                             onSend={question => makeApiRequest(question)}
                         />
+                        <h6 className={styles.chatEmptyStateSubtitle}><i>Microsoft Confidential</i></h6>
                     </div>
                 </div>
 
