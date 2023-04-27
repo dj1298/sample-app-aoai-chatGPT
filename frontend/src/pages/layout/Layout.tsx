@@ -24,6 +24,11 @@ const Layout = () => {
                                     Help
                                 </NavLink>
                             </li>
+                            <li>
+                                <NavLink to="https://msdpn.azurewebsites.net/" target="_blank" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
+                                    Data protection notice
+                                </NavLink>
+                            </li>
                         </ul>
                     </nav>
                 </div>
