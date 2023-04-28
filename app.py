@@ -128,6 +128,8 @@ def conversation():
 
         r = requests.post(endpoint, headers=headers, json=body)
         status_code = r.status_code
+        print(r.headers)
+        print(r.content)
         r = r.json()
 
         if not use_data and status_code == 200:

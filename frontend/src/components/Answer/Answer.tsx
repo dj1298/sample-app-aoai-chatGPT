@@ -5,7 +5,7 @@ import styles from "./Answer.module.css";
 
 import { Sparkle28Filled, ThumbLike20Filled, ThumbDislike20Filled } from "@fluentui/react-icons";
 
-import { AskResponse, DocumentResult } from "../../api";
+import { AskResponse, FeedbackString, DocumentResult } from "../../api";
 import { parseAnswerToJsx } from "./AnswerParser";
 
 interface Props {
@@ -34,11 +34,13 @@ export const Answer = ({
                                 aria-hidden="false"
                                 aria-label="Like this response"
                                 onClick={() => onLikeResponseClicked()}
+                                style={answer.feedback == FeedbackString.ThumbsUp ? { color: "darkgreen" } : { color: "slategray" }}
                             />
                             <ThumbDislike20Filled
                                 aria-hidden="false"
                                 aria-label="Dislike this response"
                                 onClick={() => onDislikeResponseClicked()}
+                                style={answer.feedback == FeedbackString.ThumbsDown ? { color: "darkred" } : { color: "slategray" }}
                             />
                         </div>
                     </Stack>

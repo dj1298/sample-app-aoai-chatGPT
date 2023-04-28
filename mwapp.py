@@ -18,7 +18,9 @@ if (TABLE_SERVICE_CONNECTION_STRING):
 def feedback():
     json = request.get_json()
     id = uuid.uuid4()
-    username = request.headers.get("X-MS-CLIENT-PRINCIPAL-NAME")
+    # Currently not tracking the user name until Privacy Review is complete.
+    #username = request.headers.get("X-MS-CLIENT-PRINCIPAL-NAME")
+    username = ""
     topDocs = jsonify(json["top_docs"]).data.decode("utf-8")
 
     anonymized_verbatim = anonymize(json["verbatim"])
@@ -53,7 +55,7 @@ def feedback():
     }
 
     if (table_service):
-        table_service.insert_entity("Feedback", tableEntity)
+        table_service.insert_entity("MWGPTFeedback", tableEntity)
 
     return jsonify({"success": True, "feedback": json})
 
