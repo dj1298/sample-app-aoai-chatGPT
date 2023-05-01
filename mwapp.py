@@ -5,6 +5,7 @@ from azure.cosmosdb.table.tableservice import TableService
 from presidio_analyzer import AnalyzerEngine
 from presidio_analyzer.nlp_engine import NlpEngineProvider
 from presidio_anonymizer import AnonymizerEngine
+from presidio_anonymizer.entities import OperatorConfig
 
 # Create a blueprint instance
 mw_blueprint = Blueprint('mw', __name__)
@@ -27,7 +28,7 @@ def feedback():
     topDocs = jsonify(json["top_docs"]).data.decode("utf-8")
 
 
-    anonymized_verbatim = anonymize(json["verbatim"])
+    anonymized_verbatim = anonymize(json["verbatim"], is_feedback=True)
     anonymized_question = anonymize(json["question"])
     anonymized_answer = anonymize(json["answer"])
 
@@ -74,10 +75,24 @@ nlp_engine = provider.create_engine()
 analyzer = AnalyzerEngine(nlp_engine=nlp_engine)
 anonymizer = AnonymizerEngine()
 
-def anonymize(text):
-    # Call analyzer to get results
-    results = analyzer.analyze(text=text, language='en')
+# Simple function to keep certain PII
+def keep(text: str):
+    return text
 
-    anonymized_text = anonymizer.anonymize(text=text, analyzer_results=results)
+fb_operators = { "URL": OperatorConfig("custom", { "lambda": keep }), "DEFAULT": OperatorConfig("replace") }
+qa_operators = { "DEFAULT": OperatorConfig("replace") }
+
+def anonymize(text: str, is_feedback=False):
+    # Call analyzer to get results
+    results = analyzer.analyze(
+        text=text,
+        language="en",
+    )
+
+    anonymized_text = anonymizer.anonymize(
+        text=text,
+        analyzer_results=results,
+        operators=fb_operators if is_feedback else qa_operators,
+    )
 
     return anonymized_text.text
