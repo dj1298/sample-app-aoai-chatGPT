@@ -104,7 +104,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
             isFooterAtBottom={true}
         >
             <Slider
-                label="Overall response quality"
+                label="Overall response quality - Higher is better"
                 min={1}
                 max={3}
                 defaultValue={2}
@@ -112,7 +112,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
             />
             <br />
             <Slider
-                label="Overall document quality"
+                label="Overall document quality - Higher is better"
                 min={1}
                 max={3}
                 defaultValue={2}
