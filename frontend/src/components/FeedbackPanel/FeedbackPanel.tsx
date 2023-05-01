@@ -13,6 +13,7 @@ export interface IFeedbackPanelProps {
     chatMessages: [message_id: string, parent_message_id: string, role: string, content: MessageContent, feedback: FeedbackString][];
     selectedContentIndex: string;
     inDomain: boolean;
+    allowContact: boolean;
 }
 
 export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
@@ -22,6 +23,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
     chatMessages,
     selectedContentIndex,
     inDomain,
+    allowContact,
 }) => {
     const [feedback, setFeedback] = useState<MWFeedback>({
         overall_response_quality: 3,
@@ -45,6 +47,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
         contentIndex: "",
         top_docs: [],
         in_domain: inDomain,
+        allow_contact: allowContact,
     });
 
     useEffect(() => {
@@ -76,6 +79,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
             contentIndex: selectedContentIndex,
             top_docs: topDocs,
             in_domain: inDomain,
+            allow_contact: allowContact,
         });
     }, [isOpen]);
 
@@ -176,6 +180,11 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
                 label="Case number"
                 className={styles.TextField}
                 onChange={(_ev, value) => setFeedback({ ...feedback, case_number: value ?? "" })}
+            />
+            <Checkbox
+                label="Is it okay to contact me about this feedback?"
+                className={styles.checkBox}
+                onChange={(_ev, value) => setFeedback({ ...feedback, allow_contact: !!value })}
             />
         </Panel>
     );

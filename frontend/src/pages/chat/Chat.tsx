@@ -232,6 +232,7 @@ const Chat = () => {
                     feedbackMessageIndex={feedbackMessageIndex}
                     chatMessages={answers}
                     inDomain={settings.in_domain_only ?? false}
+                    allowContact={false}
                 />
                 <SettingsPanel
                     isOpen={isConfigPanelOpen}
