@@ -106,16 +106,16 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
             <Slider
                 label="Overall response quality - Higher is better"
                 min={1}
-                max={3}
-                defaultValue={2}
+                max={5}
+                defaultValue={3}
                 onChange={(value) => setFeedback({ ...feedback, overall_response_quality: value })}
             />
             <br />
             <Slider
                 label="Overall document quality - Higher is better"
                 min={1}
-                max={3}
-                defaultValue={2}
+                max={5}
+                defaultValue={3}
                 onChange={(value) => setFeedback({ ...feedback, overall_document_quality: value })}
             />
             <hr />
