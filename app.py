@@ -119,7 +119,6 @@ def conversation():
     try:
         base_url = f"https://{AZURE_OPENAI_RESOURCE}.openai.azure.com"
         use_data = should_use_data()
-        #use_data = False
         if use_data:
             body, headers = prepare_body_headers_with_data(request)
             endpoint = f"{base_url}/openai/wednesday-private/conversation?api-version={AZURE_OPENAI_PREVIEW_API_VERSION}"
