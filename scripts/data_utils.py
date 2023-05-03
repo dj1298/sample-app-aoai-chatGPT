@@ -4,13 +4,14 @@ import ast
 import markdown
 import re
 import tiktoken
+import html
 
 from tqdm import tqdm
 from abc import ABC, abstractmethod
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag, NavigableString
 from dataclasses import dataclass
 
-from typing import List, Dict, Optional, Generator, Tuple
+from typing import List, Dict, Optional, Generator, Tuple, Union
 from langchain.text_splitter import MarkdownTextSplitter, RecursiveCharacterTextSplitter, PythonCodeTextSplitter
 
 FILE_FORMAT_DICT = {
@@ -19,7 +20,8 @@ FILE_FORMAT_DICT = {
         "html": "html",
         "shtml": "html",
         "htm": "html",
-        "py": "python"
+        "py": "python",
+        "pdf": "pdf"
     }
 
 SENTENCE_ENDINGS = [".", "!", "?"]
@@ -111,7 +113,7 @@ class MarkdownParser(BaseParser):
         Returns:
             Document: The parsed document.
         """
-        html_content = markdown.markdown(content)
+        html_content = markdown.markdown(content, extensions=['fenced_code', 'toc', 'tables', 'sane_lists'])
 
         return self._html_parser.parse(html_content, file_name)
 
@@ -119,6 +121,7 @@ class MarkdownParser(BaseParser):
 class HTMLParser(BaseParser):
     """Parses HTML content."""
     TITLE_MAX_TOKENS = 128
+    NEWLINE_TEMPL = "<NEWLINE_TEXT>"
 
     def __init__(self) -> None:
         super().__init__()
@@ -132,18 +135,71 @@ class HTMLParser(BaseParser):
         Returns:
             Document: The parsed document.
         """
-        soup = BeautifulSoup(content, "html.parser")
-        try:
-            title = next(soup.stripped_strings)
-            title = self.token_estimator.construct_tokens_with_size(title, self.TITLE_MAX_TOKENS)
+        soup = BeautifulSoup(content, 'html.parser')
 
-        except StopIteration:
-            title = file_name
+        # Extract the title
+        title = ''
+        if soup.title:
+            title = soup.title.string
+        else:
+            # Try to find the first <h1> tag
+            h1_tag = soup.find('h1')
+            if h1_tag:
+                title = h1_tag.get_text(strip=True)
+            else:
+                h2_tag = soup.find('h2')
+                if h2_tag:
+                    title = h2_tag.get_text(strip=True)
+        if title == '':
+            # if title is still not found, guess using the next string
+            try:
+                title = next(soup.stripped_strings)
+                title = self.token_estimator.construct_tokens_with_size(title, self.TITLE_MAX_TOKENS)
 
-        text = soup.get_text()
+            except StopIteration:
+                title = file_name
 
-        return Document(content=cleanup_content(text), title=title)
+                # Helper function to process text nodes
+        def process_text(text):
+            return text.strip()
 
+        # Helper function to process anchor tags
+        def process_anchor_tag(tag):
+            href = tag.get('href', '')
+            text = tag.get_text(strip=True)
+            return f'{text} ({href})'
+
+        # Collect all text nodes and anchor tags in a list
+        elements = []
+
+        for elem in soup.descendants:
+            if isinstance(elem, (Tag, NavigableString)):
+                page_element: Union[Tag, NavigableString] = elem
+                if page_element.name in ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'code']:
+                    if elements and not elements[-1].endswith('\n'):
+                        elements.append(self.NEWLINE_TEMPL)
+                if isinstance(page_element, str):
+                    elements.append(process_text(page_element))
+                elif page_element.name == 'a':
+                    elements.append(process_anchor_tag(page_element))
+
+
+        # Join the list into a single string and return but ensure that either of newlines or space are used.
+        result = ''
+        is_prev_newline = False
+        for elem in elements:
+            if elem:
+                if elem == self.NEWLINE_TEMPL:
+                    result += "\n"
+                    is_prev_newline = True
+                else:
+                    if not is_prev_newline:
+                        result += " "
+                    else:
+                        is_prev_newline = False
+                    result += f"{elem}"
+
+        return Document(content=cleanup_content(result), title=title)
 
 class TextParser(BaseParser):
     """Parses text content."""
@@ -303,6 +359,61 @@ def _get_file_format(file_name: str, extensions_to_process: List[str]) -> Option
         return None
     return FILE_FORMAT_DICT.get(file_extension, None)
 
+def table_to_html(table):
+    table_html = "<table>"
+    rows = [sorted([cell for cell in table.cells if cell.row_index == i], key=lambda cell: cell.column_index) for i in range(table.row_count)]
+    for row_cells in rows:
+        table_html += "<tr>"
+        for cell in row_cells:
+            tag = "th" if (cell.kind == "columnHeader" or cell.kind == "rowHeader") else "td"
+            cell_spans = ""
+            if cell.column_span > 1: cell_spans += f" colSpan={cell.column_span}"
+            if cell.row_span > 1: cell_spans += f" rowSpan={cell.row_span}"
+            table_html += f"<{tag}{cell_spans}>{html.escape(cell.content)}</{tag}>"
+        table_html +="</tr>"
+    table_html += "</table>"
+    return table_html
+
+def extract_pdf_content(file_path, form_recognizer_client, use_layout=False): 
+    offset = 0
+    page_map = []
+    model = "prebuilt-layout" if use_layout else "prebuilt-read"
+    with open(file_path, "rb") as f:
+        poller = form_recognizer_client.begin_analyze_document(model, document = f)
+    form_recognizer_results = poller.result()
+
+    for page_num, page in enumerate(form_recognizer_results.pages):
+        tables_on_page = [table for table in form_recognizer_results.tables if table.bounding_regions[0].page_number == page_num + 1]
+
+        # (if using layout) mark all positions of the table spans in the page
+        page_offset = page.spans[0].offset
+        page_length = page.spans[0].length
+        table_chars = [-1]*page_length
+        for table_id, table in enumerate(tables_on_page):
+            for span in table.spans:
+                # replace all table spans with "table_id" in table_chars array
+                for i in range(span.length):
+                    idx = span.offset - page_offset + i
+                    if idx >=0 and idx < page_length:
+                        table_chars[idx] = table_id
+
+        # build page text by replacing charcters in table spans with table html if using layout
+        page_text = ""
+        added_tables = set()
+        for idx, table_id in enumerate(table_chars):
+            if table_id == -1:
+                page_text += form_recognizer_results.content[page_offset + idx]
+            elif not table_id in added_tables:
+                page_text += table_to_html(tables_on_page[table_id])
+                added_tables.add(table_id)
+
+        page_text += " "
+        page_map.append((page_num, offset, page_text))
+        offset += len(page_text)
+
+    full_text = "".join([page_text for _, _, page_text in page_map])
+    return full_text
+
 def chunk_content_helper(
         content: str, file_format: str, file_name: Optional[str],
         token_overlap: int,
@@ -334,7 +445,8 @@ def chunk_content(
     num_tokens: int = 256,
     min_chunk_size: int = 10,
     token_overlap: int = 0,
-    extensions_to_process = FILE_FORMAT_DICT.keys()
+    extensions_to_process = FILE_FORMAT_DICT.keys(),
+    cracked_pdf = False
 ) -> ChunkingResult:
     """Chunks the given content. If ignore_errors is true, returns None
         in case of an error
@@ -351,7 +463,7 @@ def chunk_content(
     """
 
     try:
-        if file_name is None:
+        if file_name is None or cracked_pdf:
             file_format = "text"
         else:
             file_format = _get_file_format(file_name, extensions_to_process)
@@ -405,7 +517,9 @@ def chunk_file(
     min_chunk_size=10,
     url = None,
     token_overlap: int = 0,
-    extensions_to_process = FILE_FORMAT_DICT.keys()
+    extensions_to_process = FILE_FORMAT_DICT.keys(),
+    form_recognizer_client = None,
+    use_layout = False
 ) -> ChunkingResult:
     """Chunks the given file.
     Args:
@@ -423,8 +537,15 @@ def chunk_file(
         else:
             raise UnsupportedFormatError(f"{file_name} is not supported")
 
-    with open(file_path, "r", encoding="utf8") as f:
-        content = f.read()
+    cracked_pdf = False
+    if file_format == "pdf":
+        if form_recognizer_client is None:
+            raise UnsupportedFormatError("form_recognizer_client is required for pdf files")
+        content = extract_pdf_content(file_path, form_recognizer_client, use_layout=use_layout)
+        cracked_pdf = True
+    else:
+        with open(file_path, "r", encoding="utf8") as f:
+            content = f.read()
     return chunk_content(
         content=content,
         file_name=file_name,
@@ -433,7 +554,8 @@ def chunk_file(
         min_chunk_size=min_chunk_size,
         url=url,
         token_overlap=max(0, token_overlap),
-        extensions_to_process=extensions_to_process
+        extensions_to_process=extensions_to_process,
+        cracked_pdf=cracked_pdf
     )
 
 def chunk_directory(
@@ -443,7 +565,9 @@ def chunk_directory(
     min_chunk_size: int = 10,
     url_prefix = None,
     token_overlap: int = 0,
-    extensions_to_process: List[str] = FILE_FORMAT_DICT.keys()
+    extensions_to_process: List[str] = FILE_FORMAT_DICT.keys(),
+    form_recognizer_client = None,
+    use_layout = False
 ):
     """
     Chunks the given directory recursively
@@ -456,6 +580,10 @@ def chunk_directory(
                             For example, if the directory path is /home/user/data and the url_prefix is https://example.com/data, 
                             then the url for the file /home/user/data/file1.txt will be https://example.com/data/file1.txt
         token_overlap (int): The number of tokens to overlap between chunks.
+        extensions_to_process (List[str]): The list of extensions to process. 
+        form_recognizer_client: Optional form recognizer client to use for pdf files.
+        use_layout (bool): If true, uses Layout model for pdf files. Otherwise, uses Read.
+
     Returns:
         List[Document]: List of chunked documents.
     """
@@ -480,7 +608,9 @@ def chunk_directory(
                     min_chunk_size=min_chunk_size,
                     url=url_path,
                     token_overlap=token_overlap,
-                    extensions_to_process=extensions_to_process
+                    extensions_to_process=extensions_to_process,
+                    form_recognizer_client=form_recognizer_client,
+                    use_layout=use_layout
                 )
                 for chunk_doc in result.chunks:
                     chunk_doc.filepath = rel_file_path
