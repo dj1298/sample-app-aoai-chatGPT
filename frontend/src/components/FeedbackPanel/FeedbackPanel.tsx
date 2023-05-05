@@ -106,7 +106,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
             )}
             isFooterAtBottom={true}
         >
-            <Label htmlFor={overallRatingId}>Overall response quality - Higher is better</Label>
+            <Label htmlFor={overallRatingId}>Overall response quality</Label>
             <Rating
                 id={overallRatingId}
                 size={RatingSize.Large}
@@ -116,7 +116,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
                 onChange={(_ev, rating) => setFeedback({ ...feedback, overall_response_quality: rating ?? 1 })}
             />
             <br />
-            <Label htmlFor={documentRatingId}>Overall document quality - Higher is better</Label>
+            <Label htmlFor={documentRatingId}>Overall document quality</Label>
             <Rating
                 id={documentRatingId}
                 size={RatingSize.Large}
