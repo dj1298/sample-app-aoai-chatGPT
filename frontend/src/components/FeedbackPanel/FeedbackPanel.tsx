@@ -1,10 +1,10 @@
-import { Button, Checkbox, DefaultButton, Panel, PrimaryButton, Slider, TextField } from "@fluentui/react";
-import { useEffect, useState } from "react";
+import { Checkbox, DefaultButton, Label, Panel, PrimaryButton, Rating, RatingSize, TextField } from "@fluentui/react";
+import { useId, useEffect, useState } from "react";
 import { feedbackApi } from "../../api/mw.api";
 
 import styles from "./FeedbackPanel.module.css";
 import { MWDocFeedback, MWFeedback } from "../../api/mw.models";
-import { FeedbackRequest, FeedbackString, MessageContent } from "../../api";
+import { FeedbackString, MessageContent } from "../../api";
 
 export interface IFeedbackPanelProps {
     isOpen: boolean;
@@ -88,6 +88,9 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
         onDismiss();
     };
 
+    const overallRatingId = useId();
+    const documentRatingId = useId();
+
     return (
         <Panel
             headerText="Feedback"
@@ -103,20 +106,24 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
             )}
             isFooterAtBottom={true}
         >
-            <Slider
-                label="Overall response quality - Higher is better"
-                min={1}
+            <Label htmlFor={overallRatingId}>Overall response quality - Higher is better</Label>
+            <Rating
+                id={overallRatingId}
+                size={RatingSize.Large}
+                allowZeroStars={false}
                 max={5}
-                defaultValue={3}
-                onChange={(value) => setFeedback({ ...feedback, overall_response_quality: value })}
+                defaultRating={3}
+                onChange={(_ev, rating) => setFeedback({ ...feedback, overall_response_quality: rating ?? 1 })}
             />
             <br />
-            <Slider
-                label="Overall document quality - Higher is better"
-                min={1}
+            <Label htmlFor={documentRatingId}>Overall document quality - Higher is better</Label>
+            <Rating
+                id={documentRatingId}
+                size={RatingSize.Large}
+                allowZeroStars={false}
                 max={5}
-                defaultValue={3}
-                onChange={(value) => setFeedback({ ...feedback, overall_document_quality: value })}
+                defaultRating={3}
+                onChange={(_ev, rating) => setFeedback({ ...feedback, overall_document_quality: rating ?? 1 })}
             />
             <hr />
             <TextField
