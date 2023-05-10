@@ -12,16 +12,12 @@ export interface ISettingsPanelProps {
 
 const acsIndexOptions: IDropdownOption[] = [
   { key: "m365index", text: "M365 Combined Index" },
-  { key: "commerceindex", text: "Commerce Index" },
-  { key: "exchangeoutlookindex", text: "Exchange Outlook Index" },
-  { key: "mdoindex", text: "MDO Index" },
   { key: "odspindex", text: "ODSP Index" },
-  { key: "purviewindex", text: "Purview Index" },
   { key: "teamsindex", text: "Teams Index" },
 ];
 
 export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettingsChanged, onDismiss }) => {
-  const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(true);
+  const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(false);
   const [acsIndex, setacsIndex] = useState<string>("m365index");
 
   const onACSIndexDropDownChanged = (

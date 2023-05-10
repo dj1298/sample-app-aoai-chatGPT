@@ -1,11 +1,11 @@
 [
     {
-        "data_path": "<path to data>",
-        "location": "<azure region, e.g. 'westus2'>",
-        "subscription_id": "<subscription id>",
-        "resource_group": "<resource group name>",
-        "search_service_name": "<search service name to use or create>",
-        "index_name": "<index name to use or create>",
+        "data_path": "C:\\repos\\Youtube-transcribe\\MicrosoftTeams",
+        "location": "West US 2",
+        "subscription_id": "3551fa72-ccf0-439a-98c0-293bdcd4011e",
+        "resource_group": "Project-Moon",
+        "search_service_name": "projectmoonsearch",
+        "index_name": "youtube",
         "chunk_size": 1024,
         "token_overlap": 128,
         "semantic_config_name": "default"
