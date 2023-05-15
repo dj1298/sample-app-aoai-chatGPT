@@ -17,7 +17,7 @@ const acsIndexOptions: IDropdownOption[] = [
 ];
 
 export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettingsChanged, onDismiss }) => {
-  const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(false);
+  const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(true);
   const [acsIndex, setacsIndex] = useState<string>("m365index");
 
   const onACSIndexDropDownChanged = (
