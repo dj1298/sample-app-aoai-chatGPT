@@ -19,12 +19,13 @@ if (TABLE_SERVICE_CONNECTION_STRING):
 def feedback():
     json = request.get_json()
     id = uuid.uuid4()
+    username = ""
     # Check the allowContact setting, and if true, then track the username
-    allowedToContact = json["allow_contact"]
-    if (allowedToContact):
-        username = request.headers.get("X-MS-CLIENT-PRINCIPAL-NAME")
-    else:
-        username = ""
+    #allowedToContact = json["allow_contact"]
+    #if (allowedToContact):
+        #username = request.headers.get("X-MS-CLIENT-PRINCIPAL-NAME")
+    #else:
+        #username = ""
     topDocs = jsonify(json["top_docs"]).data.decode("utf-8")
 
 

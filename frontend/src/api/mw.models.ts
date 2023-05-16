@@ -30,5 +30,5 @@ export type MWFeedback = {
     contentIndex: string | null;
     top_docs: MWDocFeedback[];
     in_domain: boolean | null;
-    allow_contact: boolean | null;
+    // allow_contact: boolean | null;
 }
