@@ -245,17 +245,17 @@ const Chat = () => {
                     inDomain={settings.in_domain_only ?? false}
                     allowContact={false}
                 />
-                <SettingsPanel
-                    isOpen={isConfigPanelOpen}
-                    onSettingsChanged={(newSettings) => {
-                        if (settings.acs_index !== newSettings.acs_index) {
-                            clearChat();
-                        }
+            <SettingsPanel
+                isOpen={isConfigPanelOpen}
+                onSettingsChanged={(newSettings) => {
+                    if (settings.acs_index !== newSettings.acs_index) {
+                        clearChat();
+                    }
 
-                        setSettings(newSettings);
-                    }}
-                    onDismiss={() => setIsConfigPanelOpen(false)}
-                />
+                    setSettings(newSettings);
+                }}
+                onDismiss={() => setIsConfigPanelOpen(false)}
+            />
         </div>
     );
 };

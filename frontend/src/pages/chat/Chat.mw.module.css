@@ -4,6 +4,5 @@
 }
 
 .commandButton {
-    margin-right: 20px;
-    margin-bottom: 20px;
+    margin: auto 20px auto auto;
 }
