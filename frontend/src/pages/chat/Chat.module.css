@@ -97,7 +97,7 @@
     font-size: 14px;
     line-height: 22px;
     color: #242424;
-    flex: none;
+    /* flex: none; Removed this as a fix for user messages not wrapping */
     order: 0;
     flex-grow: 0;
 }
