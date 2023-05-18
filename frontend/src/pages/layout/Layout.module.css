@@ -5,7 +5,7 @@
 }
 
 .header {
-    background-color: #0078d4;
+    background-color: #0078D4;
     color: #f2f2f2;
 }
 
@@ -32,48 +32,4 @@
 .headerTitle {
     margin-left: 12px;
     font-weight: 600;
-}
-
-.headerNavList {
-    display: flex;
-    list-style: none;
-    padding-left: 0;
-    align-items: center;
-}
-
-.headerNavPageLink {
-    color: #fdfdfd;
-    text-decoration: none;
-    opacity: 0.75;
-    margin-left: 20px;
-    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-    transition-duration: 500ms;
-    transition-property: opacity;
-}
-
-.headerNavPageLink:hover {
-    opacity: 1;
-}
-
-.headerNavPageLinkActive {
-    color: #fdfdfd;
-    text-decoration: none;
-}
-
-.headerNavLeftMargin {
-    margin-left: 20px;
-}
-
-.headerRightText {
-    font-weight: normal;
-    margin-left: 40px;
-}
-
-.microsoftLogo {
-    height: 23px;
-    font-weight: 600;
-}
-
-.githubLogo {
-    height: 20px;
 }

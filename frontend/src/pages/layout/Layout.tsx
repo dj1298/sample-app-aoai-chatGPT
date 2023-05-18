@@ -3,6 +3,7 @@ import { Outlet, NavLink, Link } from "react-router-dom";
 import github from "../../assets/github.svg";
 
 import styles from "./Layout.module.css";
+import mwStyles from "./Layout.mw.module.css";
 
 const Layout = () => {
     return (
@@ -13,19 +14,19 @@ const Layout = () => {
                         <h3 className={styles.headerTitle}>Modern Work GPT</h3>
                     </Link>
                     <nav>
-                        <ul className={styles.headerNavList}>
+                        <ul className={mwStyles.headerNavList}>
                             <li>
-                                <NavLink to="/" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
+                                <NavLink to="/" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
                                     Chat
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="https://aka.ms/HowToUseMWGPT" target="_blank" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
+                                <NavLink to="https://aka.ms/HowToUseMWGPT" target="_blank" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
                                     Help
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="https://msdpn.azurewebsites.net/" target="_blank" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
+                                <NavLink to="https://msdpn.azurewebsites.net/" target="_blank" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
                                     Data Privacy Notice
                                 </NavLink>
                             </li>

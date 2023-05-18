@@ -1,11 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Stack } from "@fluentui/react";
 
 import styles from "./Answer.module.css";
 
 import { Sparkle28Filled, ThumbLike20Filled, ThumbDislike20Filled } from "@fluentui/react-icons";
 
-import { AskResponse, FeedbackString, DocumentResult } from "../../api";
+import { AskResponse, DocumentResult } from "../../api";
 import { parseAnswerToJsx } from "./AnswerParser";
 
 interface Props {
@@ -22,6 +22,7 @@ export const Answer = ({
     onDislikeResponseClicked
 }: Props) => {
     const parsedAnswer = useMemo(() => parseAnswerToJsx(answer, onCitationClicked), [answer]);
+    const [feedback, setFeedback] = useState<number>(0);
 
     return (
         <>
@@ -33,14 +34,14 @@ export const Answer = ({
                             <ThumbLike20Filled
                                 aria-hidden="false"
                                 aria-label="Like this response"
-                                onClick={() => onLikeResponseClicked()}
-                                style={answer.feedback == FeedbackString.ThumbsUp ? { color: "darkgreen" } : { color: "slategray" }}
+                                onClick={() => { setFeedback(1); onLikeResponseClicked(); }}
+                                style={feedback > 0 ? { color: "darkgreen" } : { color: "slategray" }}
                             />
                             <ThumbDislike20Filled
                                 aria-hidden="false"
                                 aria-label="Dislike this response"
-                                onClick={() => onDislikeResponseClicked()}
-                                style={answer.feedback == FeedbackString.ThumbsDown ? { color: "darkred" } : { color: "slategray" }}
+                                onClick={() => { setFeedback(-1); onDislikeResponseClicked(); }}
+                                style={feedback < 0 ? { color: "darkred" } : { color: "slategray" }}
                             />
                         </div>
                     </Stack>

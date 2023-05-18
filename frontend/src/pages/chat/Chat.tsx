@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Pivot, PivotItem } from "@fluentui/react";
+import { Pivot, PivotItem, Stack } from "@fluentui/react";
 import { Sparkle28Filled } from "@fluentui/react-icons";
 
 import styles from "./Chat.module.css";
@@ -9,7 +9,6 @@ import {
     ConversationRequest,
     conversationApi,
     MessageContent,
-    FeedbackString,
     DocumentResult
 } from "../../api";
 import { Answer } from "../../components/Answer";
@@ -44,7 +43,7 @@ const Chat = () => {
     const [activeTab, setActiveTab] = useState<Tabs | undefined>(undefined);
 
     const [currentAnswer, setCurrentAnswer] = useState<number>(0);
-    const [answers, setAnswers] = useState<[message_id: string, parent_message_id: string, role: string, content: MessageContent, feedback: FeedbackString][]>(
+    const [answers, setAnswers] = useState<[message_id: string, parent_message_id: string, role: string, content: MessageContent][]>(
         []
     );
 
@@ -83,8 +82,8 @@ const Chat = () => {
 
             setAnswers([
                 ...answers,
-                [userMessage.message_id, userMessage.parent_message_id ?? "", userMessage.role, userMessage.content, FeedbackString.Neutral],
-                [result.message_id, result.parent_message_id ?? "", result.role, result.content, FeedbackString.Neutral]
+                [userMessage.message_id, userMessage.parent_message_id ?? "", userMessage.role, userMessage.content],
+                [result.message_id, result.parent_message_id ?? "", result.role, result.content]
             ]);
         } finally {
             setIsLoading(false);
@@ -109,20 +108,10 @@ const Chat = () => {
         }
     };
 
-    const onToggleTab = (tab: Tabs, index: number) => {
-        setCurrentAnswer(index);
-        if (activeTab === tab) {
-            setActiveTab(undefined);
-        } else {
-            setActiveTab(tab);
-        }
-    };
-
     const onLikeResponse = (index: number) => {
         let answer = answers[index];
         setFeedbackMessageIndex(index);
         setIsFeedbackPanelOpen(!isFeedbackPanelOpen);
-        answer[4] = answer[4] === FeedbackString.ThumbsUp ? FeedbackString.Neutral : FeedbackString.ThumbsUp;
         setAnswers([...answers.slice(0, index), answer, ...answers.slice(index + 1)]);
     };
 
@@ -130,7 +119,6 @@ const Chat = () => {
         let answer = answers[index];
         setFeedbackMessageIndex(index);
         setIsFeedbackPanelOpen(!isFeedbackPanelOpen);
-        answer[4] = answer[4] === FeedbackString.ThumbsDown ? FeedbackString.Neutral : FeedbackString.ThumbsDown;
         setAnswers([...answers.slice(0, index), answer, ...answers.slice(index + 1)]);
     };
 
@@ -165,7 +153,6 @@ const Chat = () => {
                                                     answer: answer[3].parts[0],
                                                     thoughts: null,
                                                     data_points: [],
-                                                    feedback: answer[4],
                                                     top_docs: answer[3].top_docs
                                                 }}
                                                 onCitationClicked={c => onShowCitation(c, index)}

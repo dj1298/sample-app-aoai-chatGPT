@@ -4,13 +4,13 @@ import { feedbackApi } from "../../api/mw.api";
 
 import styles from "./FeedbackPanel.module.css";
 import { MWDocFeedback, MWFeedback } from "../../api/mw.models";
-import { FeedbackString, MessageContent } from "../../api";
+import { MessageContent } from "../../api";
 
 export interface IFeedbackPanelProps {
     isOpen: boolean;
     onDismiss: () => void;
     feedbackMessageIndex: number;
-    chatMessages: [message_id: string, parent_message_id: string, role: string, content: MessageContent, feedback: FeedbackString][];
+    chatMessages: [message_id: string, parent_message_id: string, role: string, content: MessageContent][];
     selectedContentIndex: string;
     inDomain: boolean;
     allowContact: boolean;
