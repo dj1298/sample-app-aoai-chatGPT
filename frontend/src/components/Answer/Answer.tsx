@@ -70,10 +70,10 @@ export const Answer = ({
     return (
         <>
             <Stack className={styles.answerContainer}>
-                <Stack.Item>
+                <Stack.Item style={{ width: "100%" }}>
                     <Stack horizontal horizontalAlign="space-between">
                         <Sparkle28Filled aria-hidden="true" aria-label="Answer logo" />
-                        <div>
+                        <Stack horizontal>
                             <ThumbLike20Filled
                                 aria-hidden="false"
                                 aria-label="Like this response"
@@ -86,7 +86,7 @@ export const Answer = ({
                                 onClick={() => { setFeedback(-1); onDislikeResponseClicked(); }}
                                 style={feedback < 0 ? { color: "darkred" } : { color: "slategray" }}
                             />
-                        </div>
+                        </Stack>
                     </Stack>
                 </Stack.Item>
                 <Stack.Item grow>
