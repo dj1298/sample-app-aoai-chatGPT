@@ -22,6 +22,7 @@ export type DocumentResult = {
     filepath: string | null;
     url: string | null;
     metadata: string | null;
+    chunk_id: string | null;
 }
 
 export type ChatMessage = {
