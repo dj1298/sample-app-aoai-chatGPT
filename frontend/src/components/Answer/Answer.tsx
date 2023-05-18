@@ -70,25 +70,25 @@ export const Answer = ({
     return (
         <>
             <Stack className={styles.answerContainer}>
-            <Stack.Item>
-                <Stack horizontal horizontalAlign="space-between">
-                    <Sparkle28Filled aria-hidden="true" aria-label="Answer logo" />
-                    <div>
-                        <ThumbLike20Filled
-                            aria-hidden="false"
-                            aria-label="Like this response"
-                            onClick={() => { setFeedback(1); onLikeResponseClicked(); }}
-                            style={feedback > 0 ? { color: "darkgreen" } : { color: "slategray" }}
-                        />
-                        <ThumbDislike20Filled
-                            aria-hidden="false"
-                            aria-label="Dislike this response"
-                            onClick={() => { setFeedback(-1); onDislikeResponseClicked(); }}
-                            style={feedback < 0 ? { color: "darkred" } : { color: "slategray" }}
-                        />
-                    </div>
-                </Stack>
-            </Stack.Item>
+                <Stack.Item>
+                    <Stack horizontal horizontalAlign="space-between">
+                        <Sparkle28Filled aria-hidden="true" aria-label="Answer logo" />
+                        <div>
+                            <ThumbLike20Filled
+                                aria-hidden="false"
+                                aria-label="Like this response"
+                                onClick={() => { setFeedback(1); onLikeResponseClicked(); }}
+                                style={feedback > 0 ? { color: "darkgreen" } : { color: "slategray" }}
+                            />
+                            <ThumbDislike20Filled
+                                aria-hidden="false"
+                                aria-label="Dislike this response"
+                                onClick={() => { setFeedback(-1); onDislikeResponseClicked(); }}
+                                style={feedback < 0 ? { color: "darkred" } : { color: "slategray" }}
+                            />
+                        </div>
+                    </Stack>
+                </Stack.Item>
                 <Stack.Item grow>
                     {useMarkdownFormat ? ( 
                         <ReactMarkdown

@@ -8,6 +8,7 @@ import rehypeRaw from "rehype-raw";
 
 import styles from "./Chat.module.css";
 import AzureOpenAILogo from "../../assets/AzureOpenAILogo.svg";
+import mwStyles from "./Chat.mw.module.css";
 
 import {
     ChatMessage,
@@ -21,6 +22,8 @@ import { QuestionInput } from "../../components/QuestionInput";
 import { Settings } from "../../api/mw.models";
 import { FeedbackPanel } from "../../components/FeedbackPanel/FeedbackPanel";
 import { SettingsPanel } from "../../components/SettingsPanel/SettingsPanel";
+import { SettingsButton } from "../../components/SettingsButton";
+
 
 const Chat = () => {
     const [isFeedbackPanelOpen, setIsFeedbackPanelOpen] = useState(false);
@@ -123,6 +126,9 @@ const Chat = () => {
 
     return (
         <div className={styles.container}>
+            <div className={mwStyles.commandsContainer}>
+                <SettingsButton className={mwStyles.commandButton} onClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)} />
+            </div>
             <Stack horizontal className={styles.chatRoot}>
                 <div className={styles.chatContainer}>
                     {!lastQuestionRef.current ? (
@@ -132,8 +138,9 @@ const Chat = () => {
                                 className={styles.chatIcon}
                                 aria-hidden="true"
                             /> */}
-                            <h1 className={styles.chatEmptyStateTitle}>Start chatting</h1>
-                            <h2 className={styles.chatEmptyStateSubtitle}>This chatbot is configured to answer your questions.</h2>
+                            <h1 className={styles.chatEmptyStateTitle}>Ask question to start.</h1>
+                            <h2 className={styles.chatEmptyStateSubtitle}><i>"Entering End-User Personally Identifiable Information (EUPII) and Customer Data is strictly forbidden."</i></h2>
+                            <img src="/MWLogo.PNG" height="233" width="233"></img>
                         </Stack>
                     ) : (
                         <div className={styles.chatMessageStream}>
@@ -216,6 +223,7 @@ const Chat = () => {
                             onSend={question => makeApiRequest(question)}
                         />
                     </Stack>
+                    <h6 className={styles.chatEmptyStateSubtitle}><i>Microsoft Confidential</i></h6>
                 </div>
                 {answers.length > 0 && isCitationPanelOpen && activeCitation && (
                 <Stack.Item className={styles.citationPanel}>

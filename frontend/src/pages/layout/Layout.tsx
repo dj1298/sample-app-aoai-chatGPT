@@ -36,31 +36,32 @@ const Layout = () => {
         <div className={styles.layout}>
             <header className={styles.header} role={"banner"}>
                 <div className={styles.headerContainer}>
-                    <Link to="/" className={styles.headerTitleContainer}>
-                        <h3 className={styles.headerTitle}>Modern Work GPT</h3>
-                    </Link>
-                    <nav>
-                        <ul className={mwStyles.headerNavList}>
-                            <li>
-                                <NavLink to="/" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
-                                    Chat
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="https://aka.ms/HowToUseMWGPT" target="_blank" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
-                                    Help
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="https://msdpn.azurewebsites.net/" target="_blank" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
-                                    Data Privacy Notice
-                                </NavLink>
-                            </li>
-                        </ul>
-                    </nav>
+                    <Stack horizontal verticalAlign="center">
+                        <Link to="/" className={styles.headerTitleContainer}>
+                            <h3 className={styles.headerTitle}>Modern Work GPT</h3>
+                        </Link>
+                        <nav>
+                            <ul className={mwStyles.headerNavList}>
+                                <li>
+                                    <NavLink to="/" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
+                                        Chat
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="https://aka.ms/HowToUseMWGPT" target="_blank" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
+                                        Help
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="https://msdpn.azurewebsites.net/" target="_blank" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
+                                        Data Privacy Notice
+                                    </NavLink>
+                                </li>
+                            </ul>
+                        </nav>
+                    </Stack>
                 </div>
             </header>
-            <hr />
             <Outlet />
             <Dialog 
                 onDismiss={handleSharePanelDismiss}

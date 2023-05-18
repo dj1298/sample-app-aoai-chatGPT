@@ -4,10 +4,11 @@
     list-style: none;
     padding-left: 0;
     align-items: center;
+    margin-left: 100px;
 }
 
 .headerNavPageLink {
-    color: #fdfdfd;
+    color: black;
     text-decoration: none;
     opacity: 0.75;
     margin-left: 20px;
@@ -21,6 +22,6 @@
 }
 
 .headerNavPageLinkActive {
-    color: #fdfdfd;
+    color: black;
     text-decoration: none;
 }
