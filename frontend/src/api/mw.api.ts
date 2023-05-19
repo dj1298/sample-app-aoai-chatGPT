@@ -28,5 +28,5 @@ export async function azureIndexDateApi() : Promise<string> {
         throw Error("Unknown error");
     }
 
-    return JSON.stringify(response.text); 
+    return await response.text();
 }

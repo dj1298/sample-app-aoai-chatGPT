@@ -23,6 +23,7 @@ import { Settings } from "../../api/mw.models";
 import { FeedbackPanel } from "../../components/FeedbackPanel/FeedbackPanel";
 import { SettingsPanel } from "../../components/SettingsPanel/SettingsPanel";
 import { SettingsButton } from "../../components/SettingsButton";
+import { MwFooter } from "../../components/MwFooter/MwFooter";
 
 
 const Chat = () => {
@@ -223,7 +224,7 @@ const Chat = () => {
                             onSend={question => makeApiRequest(question)}
                         />
                     </Stack>
-                    <h6 className={styles.chatEmptyStateSubtitle}><i>Microsoft Confidential</i></h6>
+                    <MwFooter />
                 </div>
                 {answers.length > 0 && isCitationPanelOpen && activeCitation && (
                 <Stack.Item className={styles.citationPanel}>
