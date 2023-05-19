@@ -3,6 +3,10 @@ export type Settings = {
     in_domain_only: boolean | null;
 }
 
+export type AzureIndexDate = {
+    azure_index_date: string | null;
+}
+
 export type MWDocFeedback = {
     title: string;
     filepath: string;

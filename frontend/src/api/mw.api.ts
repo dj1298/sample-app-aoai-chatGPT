@@ -14,3 +14,19 @@ export async function feedbackApi(feedback: MWFeedback): Promise<void> {
         throw Error("Unknown error");
     }
 }
+
+export async function azureIndexDateApi() : Promise<string> {
+    const response = await fetch("/azureindexdate", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+
+    if (response.status > 299 || !response.ok) {
+        alert("Unknown error");
+        throw Error("Unknown error");
+    }
+
+    return JSON.stringify(response.text); 
+}

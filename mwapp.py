@@ -15,6 +15,12 @@ TABLE_SERVICE_CONNECTION_STRING = os.environ.get("TABLE_SERVICE_CONNECTION_STRIN
 if (TABLE_SERVICE_CONNECTION_STRING):
     table_service = TableService(connection_string=TABLE_SERVICE_CONNECTION_STRING)
 
+@mw_blueprint.route("/azureindexdate", methods=["GET"])
+def azureindexdate():
+    AZURE_INDEX_DATE = os.environ.get("AZURE_INDEX_DATE")
+    return AZURE_INDEX_DATE
+
+
 @mw_blueprint.route("/feedback", methods=["POST"])
 def feedback():
     json = request.get_json()
