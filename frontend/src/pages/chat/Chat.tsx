@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeRaw from "rehype-raw"; 
 
 import styles from "./Chat.module.css";
+import Azure from "../../assets/Azure.svg";
 import AzureOpenAILogo from "../../assets/AzureOpenAILogo.svg";
 import mwStyles from "./Chat.mw.module.css";
 
@@ -134,10 +135,13 @@ const Chat = () => {
                 <div className={styles.chatContainer}>
                     {!lastQuestionRef.current ? (
                         <Stack className={styles.chatEmptyState}>
-                            {/* <img
-                                src={AzureOpenAILogo}
+                            <img
+                                src={Azure}
                                 className={styles.chatIcon}
                                 aria-hidden="true"
+                            />
+                            <h1 className={styles.chatEmptyStateTitle}>Start chatting</h1>
+                            <h2 className={styles.chatEmptyStateSubtitle}>This chatbot is configured to answer your questions</h2>
                             /> */}
                             <h1 className={styles.chatEmptyStateTitle}>Ask question to start.</h1>
                             <h2 className={styles.chatEmptyStateSubtitle}><i>"Entering End-User Personally Identifiable Information (EUPII) and Customer Data is strictly forbidden."</i></h2>

@@ -3,6 +3,9 @@ import logging
 import requests
 from flask import Flask, request, jsonify
 from mwapp import mw_blueprint;
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -17,9 +20,8 @@ AZURE_SEARCH_INDEX = os.environ.get("AZURE_SEARCH_INDEX")
 AZURE_SEARCH_KEY = os.environ.get("AZURE_SEARCH_KEY")
 AZURE_SEARCH_USE_SEMANTIC_SEARCH = os.environ.get("AZURE_SEARCH_USE_SEMANTIC_SEARCH", False)
 AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG = os.environ.get("AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG", "default")
-AZURE_SEARCH_INDEX_IS_PRECHUNKED = os.environ.get("AZURE_SEARCH_INDEX_IS_PRECHUNKED", "false")
 AZURE_SEARCH_TOP_K = os.environ.get("AZURE_SEARCH_TOP_K", 5)
-AZURE_SEARCH_ENABLE_IN_DOMAIN = os.environ.get("AZURE_SEARCH_ENABLE_IN_DOMAIN", False)
+AZURE_SEARCH_ENABLE_IN_DOMAIN = os.environ.get("AZURE_SEARCH_ENABLE_IN_DOMAIN", "true")
 AZURE_SEARCH_CONTENT_COLUMNS = os.environ.get("AZURE_SEARCH_CONTENT_COLUMNS")
 AZURE_SEARCH_FILENAME_COLUMN = os.environ.get("AZURE_SEARCH_FILENAME_COLUMN")
 AZURE_SEARCH_TITLE_COLUMN = os.environ.get("AZURE_SEARCH_TITLE_COLUMN")
@@ -29,7 +31,6 @@ AZURE_SEARCH_URL_COLUMN = os.environ.get("AZURE_SEARCH_URL_COLUMN")
 AZURE_OPENAI_RESOURCE = os.environ.get("AZURE_OPENAI_RESOURCE")
 AZURE_OPENAI_MODEL = os.environ.get("AZURE_OPENAI_MODEL")
 AZURE_OPENAI_KEY = os.environ.get("AZURE_OPENAI_KEY")
-AZURE_OPENAI_DEPLOYMENT = os.environ.get("AZURE_OPENAI_DEPLOYMENT")
 AZURE_OPENAI_TEMPERATURE = os.environ.get("AZURE_OPENAI_TEMPERATURE", 0)
 AZURE_OPENAI_TOP_P = os.environ.get("AZURE_OPENAI_TOP_P", 1.0)
 AZURE_OPENAI_MAX_TOKENS = os.environ.get("AZURE_OPENAI_MAX_TOKENS", 1000)
@@ -52,9 +53,6 @@ def prepare_body_headers_with_data(request):
     if AZURE_OPENAI_STOP_SEQUENCE:
         sequences = AZURE_OPENAI_STOP_SEQUENCE.split("|")
         body["stop"] = sequences
-    
-    if AZURE_OPENAI_DEPLOYMENT:
-        body["deployment"] = AZURE_OPENAI_DEPLOYMENT
 
     if AZURE_OPENAI_SYSTEM_MESSAGE:
         body["system_message"] = AZURE_OPENAI_SYSTEM_MESSAGE
@@ -79,13 +77,13 @@ def prepare_body_headers_with_data(request):
         "azure_document_search_url": search_url,
         "azure_document_search_api_key": AZURE_SEARCH_KEY,
         "azure_document_search_index": AZURE_SEARCH_INDEX,
-        "azure_document_is_prechunked": "true" if AZURE_SEARCH_INDEX_IS_PRECHUNKED.lower() == "true" else "false",
         "chatgpt_url": azure_openai_url,
         "chatgpt_key": AZURE_OPENAI_KEY,
         "Ocp-Apim-Subscription-Key": AZURE_OPENAI_KEY,
         'api-key': AZURE_OPENAI_KEY,
         "azure_document_search_configuration": AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG if AZURE_SEARCH_USE_SEMANTIC_SEARCH.lower() == "true" and AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG else "",
-        "azure_document_search_query_type": "semantic" if AZURE_SEARCH_USE_SEMANTIC_SEARCH.lower() == "true" else "simple"
+        "azure_document_search_query_type": "semantic" if AZURE_SEARCH_USE_SEMANTIC_SEARCH.lower() == "true" else "simple",
+        "x-ms-useragent": "GitHubSampleWebApp/2.0.1"
     }
 
     return body, headers
@@ -167,7 +165,7 @@ def conversation():
                 },
             }
 
-        return jsonify(r)
+        return jsonify(r), status_code
     except Exception as e:
         logging.exception("Exception in /conversation")
         return jsonify({"error": str(e)}), 500

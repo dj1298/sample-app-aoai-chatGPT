@@ -1,6 +1,6 @@
 import { Outlet, Link, NavLink } from "react-router-dom";
 import styles from "./Layout.module.css";
-import AzureOpenAILogo from "../../assets/AzureOpenAILogo.svg";
+import Azure from "../../assets/Azure.svg";
 import { CopyRegular, ShareRegular } from "@fluentui/react-icons";
 import { Dialog, Stack, TextField } from "@fluentui/react";
 import { useEffect, useState } from "react";
@@ -37,6 +37,11 @@ const Layout = () => {
             <header className={styles.header} role={"banner"}>
                 <div className={styles.headerContainer}>
                     <Stack horizontal verticalAlign="center">
+                        <img
+                            src={Azure}
+                            className={styles.headerIcon}
+                            aria-hidden="true"
+                        />
                         <Link to="/" className={styles.headerTitleContainer}>
                             <h3 className={styles.headerTitle}>Modern Work GPT</h3>
                         </Link>

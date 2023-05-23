@@ -131,3 +131,7 @@ dmypy.json
 .pyre/
 
 static/
+.venv
+frontend/node_modules
+.env
+static

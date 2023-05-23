@@ -11,7 +11,18 @@ Note: this app is under construction!
 
 ## Deploy the app
 
-You can use the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) to deploy the app from your local machine. 
+### One click Azure deployment
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fruoccofabrizio%2Fsample-app-aoai-chatGPT%2Fmain%2Finfrastructure%2Fdeployment.json)
+
+Click on the Deploy to Azure button and configure your settings in the Azure Portal as described in the [Environment variables](#environment-variables) section.
+
+Please be aware that you need:
+-   an existing Azure OpenAI resource with models deployment
+-   OPTIONALLY - an existing Azure Cognitive Search
+
+### Deploy from your local machine
+
+You can use the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) to deploy the app from your local machine. Make sure you have version 2.48.1 or later.
 
 If this is your first time deploying the app, you can use [az webapp up](https://learn.microsoft.com/en-us/cli/azure/webapp?view=azure-cli-latest#az-webapp-up). Run the following command from the root folder of the repo, updating the placeholder values to your desired app name, resource group, location, and subscription. You can also change the SKU if desired.
 
@@ -34,6 +45,35 @@ Feel free to fork this repository and make your own modifications to the UX or b
 
 - Reset the chat session (clear chat) if the user changes any settings. Notify the user that their chat history will be lost.
 - Clearly communicate to the user what impact each setting will have on their experience.
+- When you rotate API keys for your AOAI or ACS resource, be sure to update the app settings for each of your deployed apps to use the new key.
+
+## Environment variables
+
+| App Setting | Value | Note |
+| --- | --- | ------------- |
+|AZURE_SEARCH_SERVICE|||
+|AZURE_SEARCH_INDEX|||
+|AZURE_SEARCH_KEYv
+|AZURE_SEARCH_USE_SEMANTIC_SEARCH|False||
+|AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG|default||
+|AZURE_SEARCH_INDEX_IS_PRECHUNKED|False||
+|AZURE_SEARCH_TOP_K|5||
+|AZURE_SEARCH_ENABLE_IN_DOMAIN|False||
+|AZURE_SEARCH_CONTENT_COLUMNS|||
+|AZURE_SEARCH_FILENAME_COLUMN|||
+|AZURE_SEARCH_TITLE_COLUMN|||
+|AZURE_SEARCH_URL_COLUMN|||
+|AZURE_OPENAI_RESOURCE|||
+|AZURE_OPENAI_MODEL|||
+|AZURE_OPENAI_KEY|||
+|AZURE_OPENAI_DEPLOYMENT|||
+|AZURE_OPENAI_TEMPERATURE|0||
+|AZURE_OPENAI_TOP_P|1.0||
+|AZURE_OPENAI_MAX_TOKENS|1000||
+|AZURE_OPENAI_STOP_SEQUENCE|||
+|AZURE_OPENAI_SYSTEM_MESSAGE|You are an AI assistant that helps people find information.||
+|AZURE_OPENAI_API_VERSION|2023-03-31-preview||
+
 
 ## Contributing
 
