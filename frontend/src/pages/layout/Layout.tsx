@@ -37,11 +37,6 @@ const Layout = () => {
             <header className={styles.header} role={"banner"}>
                 <div className={styles.headerContainer}>
                     <Stack horizontal verticalAlign="center">
-                        <img
-                            src={Azure}
-                            className={styles.headerIcon}
-                            aria-hidden="true"
-                        />
                         <Link to="/" className={styles.headerTitleContainer}>
                             <h3 className={styles.headerTitle}>Modern Work GPT</h3>
                         </Link>
