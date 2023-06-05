@@ -4,13 +4,13 @@ import { feedbackApi } from "../../api/mw.api";
 
 import styles from "./FeedbackPanel.module.css";
 import { MWDocFeedback, MWFeedback } from "../../api/mw.models";
-import { ToolMessageContent } from "../../api";
+import { ChatMessage, Citation, ToolMessageContent } from "../../api";
 
 export interface IFeedbackPanelProps {
     isOpen: boolean;
     onDismiss: () => void;
     feedbackMessageIndex: number;
-    chatMessages: [message_id: string, parent_message_id: string, role: string, content: ToolMessageContent][];
+    chatMessages: ChatMessage[];
     selectedContentIndex: string;
     inDomain: boolean;
     allowContact: boolean;
@@ -58,13 +58,24 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
         let topDocs: MWDocFeedback[] = [];
 
         if (feedbackMessageIndex >= 1) {
-            questionId = chatMessages[feedbackMessageIndex - 1][0];
-            question = chatMessages[feedbackMessageIndex - 1][3].parts.join("\n");
+            // questionId = chatMessages[feedbackMessageIndex - 1][0];
+            question = chatMessages[feedbackMessageIndex - 2].content;
 
-            answerId = chatMessages[feedbackMessageIndex][0];
-            answer = chatMessages[feedbackMessageIndex][3].parts.join("\n");
+            // answerId = chatMessages[feedbackMessageIndex][0];
+            answer = chatMessages[feedbackMessageIndex].content;
 
-            topDocs = chatMessages[feedbackMessageIndex][3].top_docs.map((d) => ({
+            // Parse out citations from the "tool" role message
+            let citations: Citation[] = [];
+            if (chatMessages[feedbackMessageIndex - 1].role == "tool") {
+                try {
+                    const toolMessage = JSON.parse(chatMessages[feedbackMessageIndex - 1].content) as ToolMessageContent;
+                    citations = toolMessage.citations;
+                }
+                catch {
+                    // Failure to parse tool message, weird - but not fatal
+                }
+            }
+            topDocs = citations.map((d) => ({
                 title: d.title ?? "",
                 filepath: d.filepath ?? "",
             }));
