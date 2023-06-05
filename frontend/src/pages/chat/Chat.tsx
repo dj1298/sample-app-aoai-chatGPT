@@ -15,8 +15,9 @@ import {
     ChatMessage,
     ConversationRequest,
     conversationApi,
-    MessageContent,
-    DocumentResult
+    Citation,
+    ToolMessageContent,
+    ChatResponse
 } from "../../api";
 import { Answer } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
@@ -39,55 +40,66 @@ const Chat = () => {
     const lastQuestionRef = useRef<string>("");
     const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [showLoadingMessage, setShowLoadingMessage] = useState<boolean>(false);
     const [activeCitation, setActiveCitation] = useState<[content: string, id: string, title: string, filepath: string, url: string, metadata: string]>();
     const [isCitationPanelOpen, setIsCitationPanelOpen] = useState<boolean>(false);
-    const [answers, setAnswers] = useState<[message_id: string, parent_message_id: string, role: string, content: MessageContent][]>([]);
+    const [answers, setAnswers] = useState<ChatMessage[]>([]);
     const abortFuncs = useRef([] as AbortController[]);
 
     const makeApiRequest = async (question: string) => {
         lastQuestionRef.current = question;
 
         setIsLoading(true);
+        setShowLoadingMessage(true);
         const abortController = new AbortController();
         abortFuncs.current.unshift(abortController);
 
-        const prevMessages: ChatMessage[] = answers.map(a => ({
-            message_id: a[0],
-            parent_message_id: a[1] ?? "",
-            role: a[2],
-            content: a[3]
-        }));
         const userMessage: ChatMessage = {
-            message_id: crypto.randomUUID(),
-            parent_message_id: prevMessages.length > 0 ? prevMessages[prevMessages.length - 1].message_id : "",
             role: "user",
-            content: {
-                content_type: "text",
-                parts: [question],
-                top_docs: [],
-                intent: ""
-            }
+            content: question
         };
 
         const request: ConversationRequest = {
-            messages: [...prevMessages, userMessage],
+            messages: [...answers, userMessage]
             settings: settings,
         };
 
+        let result = {} as ChatResponse;
         try {
-            const result = await conversationApi(request, abortController.signal);
-            setAnswers([
-                ...answers,
-                [userMessage.message_id, userMessage.parent_message_id ?? "", userMessage.role, userMessage.content],
-                [result.message_id, result.parent_message_id ?? "", result.role, result.content]
-            ]);
-        } catch {
-            setAnswers([
-                ...answers,
-                [userMessage.message_id, userMessage.parent_message_id ?? "", userMessage.role, userMessage.content]
-            ]);
+            const response = await conversationApi(request, abortController.signal);
+            if (response?.body) {
+                
+                const reader = response.body.getReader();
+                let runningText = "";
+                while (true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
+
+                    var text = new TextDecoder("utf-8").decode(value);
+                    const objects = text.split("\n");
+                    objects.forEach((obj) => {
+                        try {
+                            runningText += obj;
+                            result = JSON.parse(runningText);
+                            setShowLoadingMessage(false);
+                            setAnswers([...answers, userMessage, ...result.choices[0].messages]);
+                            runningText = "";
+                        }
+                        catch { }
+                    });
+                }
+                setAnswers([...answers, userMessage, ...result.choices[0].messages]);
+            }
+            
+        } catch ( e )  {
+            if (!abortController.signal.aborted) {
+                console.error(result);
+                alert("An error occurred. Please try again. If the problem persists, please contact the site administrator.")
+            }
+            setAnswers([...answers, userMessage]);
         } finally {
             setIsLoading(false);
+            setShowLoadingMessage(false);
             abortFuncs.current = abortFuncs.current.filter(a => a !== abortController);
         }
 
@@ -102,15 +114,29 @@ const Chat = () => {
 
     const stopGenerating = () => {
         abortFuncs.current.forEach(a => a.abort());
+        setShowLoadingMessage(false);
         setIsLoading(false);
     }
 
-    useEffect(() => chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" }), [isLoading]);
+    useEffect(() => chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" }), [showLoadingMessage]);
 
-    const onShowCitation = (citation: DocumentResult, index: number) => {
+    const onShowCitation = (citation: Citation) => {
         setActiveCitation([citation.content, citation.id, citation.title ?? "", citation.filepath ?? "", "", ""]);
         setIsCitationPanelOpen(true);
     };
+
+    const parseCitationFromMessage = (message: ChatMessage) => {
+        if (message.role === "tool") {
+            try {
+                const toolMessage = JSON.parse(message.content) as ToolMessageContent;
+                return toolMessage.citations;
+            }
+            catch {
+                return [];
+            }
+        }
+        return [];
+    }
 
     const onLikeResponse = (index: number) => {
         let answer = answers[index];
@@ -140,31 +166,29 @@ const Chat = () => {
                             <img src="/MWLogo.PNG" height="233" width="233"></img>
                         </Stack>
                     ) : (
-                        <div className={styles.chatMessageStream}>
+                        <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? "40px" : "0px"}}>
                             {answers.map((answer, index) => (
                                 <>
-                                    {answer[2] === "user" ? (
+                                    {answer.role === "user" ? (
                                         <div className={styles.chatMessageUser}>
-                                            <div className={styles.chatMessageUserMessage}>{answer[3].parts[0]}</div>
+                                            <div className={styles.chatMessageUserMessage}>{answer.content}</div>
                                         </div>
                                     ) : (
-                                        <div className={styles.chatMessageGpt}>
+                                        answer.role === "assistant" ? <div className={styles.chatMessageGpt}>
                                             <Answer
                                                 answer={{
-                                                    answer: answer[3].parts[0],
-                                                    thoughts: null,
-                                                    data_points: [],
-                                                    top_docs: answer[3].top_docs
+                                                    answer: answer.content,
+                                                    citations: parseCitationFromMessage(answers[index - 1]),
                                                 }}
-                                                onCitationClicked={c => onShowCitation(c, index)}
+                                                onCitationClicked={c => onShowCitation(c)}
                                                 onLikeResponseClicked={() => onLikeResponse(index)}
                                                 onDislikeResponseClicked={() => onDislikeResponse(index)}
                                             />
-                                        </div>
+                                        </div> : null
                                     )}
                                 </>
                             ))}
-                            {isLoading && (
+                            {showLoadingMessage && (
                                 <>
                                     <div className={styles.chatMessageUser}>
                                         <div className={styles.chatMessageUserMessage}>{lastQuestionRef.current}</div>
@@ -173,9 +197,7 @@ const Chat = () => {
                                         <Answer
                                             answer={{
                                                 answer: "Generating answer...",
-                                                thoughts: null,
-                                                data_points: [],
-                                                top_docs: []
+                                                citations: []
                                             }}
                                             onCitationClicked={() => null}
                                             onLikeResponseClicked={() => null}

@@ -4,8 +4,8 @@ import { FontIcon, Stack, Text } from "@fluentui/react";
 
 import styles from "./Answer.module.css";
 
-import { AskResponse, DocumentResult } from "../../api";
-import { parseAnswerToJsx } from "./AnswerParser";
+import { AskResponse, Citation } from "../../api";
+import { parseAnswer } from "./AnswerParser";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -14,7 +14,7 @@ import { Sparkle28Filled, ThumbDislike20Filled, ThumbLike20Filled } from "@fluen
 
 interface Props {
     answer: AskResponse;
-    onCitationClicked: (citedDocument: DocumentResult) => void;
+    onCitationClicked: (citedDocument: Citation) => void;
     onLikeResponseClicked: () => void;
     onDislikeResponseClicked: () => void;
 }
@@ -28,16 +28,9 @@ export const Answer = ({
     const [feedback, setFeedback] = useState<number>(0);
 
     const [isRefAccordionOpen, { toggle: toggleIsRefAccordionOpen }] = useBoolean(false);
-    const onInlineCitationClicked = () => {
-        if (!isRefAccordionOpen) {
-            toggleIsRefAccordionOpen();
-        }
-    };
-
-    const useMarkdownFormat = true; // set to false to use inline clickable citations without markdown formatting
     const filePathTruncationLimit = 50;
 
-    const parsedAnswer = useMemo(() => parseAnswerToJsx(answer, onInlineCitationClicked), [answer]);
+    const parsedAnswer = useMemo(() => parseAnswer(answer), [answer]);
     const [chevronIsExpanded, setChevronIsExpanded] = useState(isRefAccordionOpen);
 
     const handleChevronClick = () => {
@@ -49,7 +42,7 @@ export const Answer = ({
         setChevronIsExpanded(isRefAccordionOpen);
     }, [isRefAccordionOpen]);
 
-    const createCitationFilepath = (citation: DocumentResult, index: number, truncate: boolean = false) => {
+    const createCitationFilepath = (citation: Citation, index: number, truncate: boolean = false) => {
         let citationFilename = "";
 
         if (citation.filepath && citation.chunk_id) {
@@ -90,13 +83,11 @@ export const Answer = ({
                     </Stack>
                 </Stack.Item>
                 <Stack.Item grow>
-                    {useMarkdownFormat ? ( 
-                        <ReactMarkdown
-                            remarkPlugins={[remarkGfm, supersub]}
-                            children={parsedAnswer.markdownFormatText}
-                            className={styles.answerText}
-                        /> ) : ( 
-                        <p className={styles.answerText}>{parsedAnswer.answerJsx}</p>)}
+                    <ReactMarkdown
+                        remarkPlugins={[remarkGfm, supersub]}
+                        children={parsedAnswer.markdownFormatText}
+                        className={styles.answerText}
+                    />
                 </Stack.Item>
                 <Stack horizontal className={styles.answerFooter}>
                 {!!parsedAnswer.citations.length && (

@@ -2,20 +2,11 @@ import { Settings } from "./mw.models";
 
 export type AskResponse = {
     answer: string;
-    thoughts: string | null;
-    data_points: string[];
-    top_docs: DocumentResult[];
+    citations: Citation[];
     error?: string;
 };
 
-export type MessageContent = {
-    content_type: string;
-    parts: string[];
-    top_docs: DocumentResult[];
-    intent: string | null;
-};
-
-export type DocumentResult = {
+export type Citation = {
     content: string;
     id: string;
     title: string | null;
@@ -23,14 +14,36 @@ export type DocumentResult = {
     url: string | null;
     metadata: string | null;
     chunk_id: string | null;
+    reindex_id: string | null;
+}
+
+export type ToolMessageContent = {
+    citations: Citation[];
+    intent: string;
 }
 
 export type ChatMessage = {
-    message_id: string;
-    parent_message_id: string | null;
     role: string;
-    content: MessageContent;
+    content: string;
+    end_turn?: boolean;
 };
+
+export enum ChatCompletionType {
+    ChatCompletion = "chat.completion",
+    ChatCompletionChunk = "chat.completion.chunk"
+}
+
+export type ChatResponseChoice = {
+    messages: ChatMessage[];
+}
+
+export type ChatResponse = {
+    id: string;
+    model: string;
+    created: number;
+    object: ChatCompletionType;
+    choices: ChatResponseChoice[];
+}
 
 export type ConversationRequest = {
     messages: ChatMessage[];
