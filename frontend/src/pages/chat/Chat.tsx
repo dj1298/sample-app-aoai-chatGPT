@@ -60,7 +60,7 @@ const Chat = () => {
         };
 
         const request: ConversationRequest = {
-            messages: [...answers, userMessage]
+            messages: [...answers, userMessage],
             settings: settings,
         };
 
