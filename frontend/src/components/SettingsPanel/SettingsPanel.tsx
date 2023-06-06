@@ -12,8 +12,6 @@ export interface ISettingsPanelProps {
 
 const acsIndexOptions: IDropdownOption[] = [
   { key: "m365index", text: "M365 Combined Index" },
-  { key: "odspindex", text: "ODSP Index" },
-  { key: "teamsindex", text: "Teams Index" },
 ];
 
 export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettingsChanged, onDismiss }) => {
