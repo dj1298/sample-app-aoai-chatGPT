@@ -84,6 +84,7 @@ export const Answer = ({
                 </Stack.Item>
                 <Stack.Item grow>
                     <ReactMarkdown
+                        linkTarget="_blank"
                         remarkPlugins={[remarkGfm, supersub]}
                         children={parsedAnswer.markdownFormatText}
                         className={styles.answerText}

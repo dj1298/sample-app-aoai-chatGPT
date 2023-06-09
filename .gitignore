@@ -1,3 +1,39 @@
+.venv
+frontend/node_modules
+.env
+static
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Codespaces
+Marketplace
+Explore
+ 
+@dj1298 
+dj1298
+/
+sample-app-aoai-chatGPT
+Private
+Fork your own copy of dj1298/sample-app-aoai-chatGPT
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+Settings
+Beta Try the new code view
+sample-app-aoai-chatGPT/.gitignore
+@dj1298
+dj1298 Initial commit
+Latest commit 8ddbe83 on Mar 7
+ History
+ 1 contributor
+129 lines (105 sloc)  1.76 KB
+ 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -135,3 +171,17 @@ static/
 frontend/node_modules
 .env
 static
+Footer
+© 2023 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
