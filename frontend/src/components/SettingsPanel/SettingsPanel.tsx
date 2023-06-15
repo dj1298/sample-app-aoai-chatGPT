@@ -10,9 +10,9 @@ export interface ISettingsPanelProps {
   onDismiss: () => void;
 }
 
-const acsIndexOptions: IDropdownOption[] = [
+/* const acsIndexOptions: IDropdownOption[] = [
   { key: "m365index", text: "M365 Combined Index" },
-];
+]; */
 
 export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettingsChanged, onDismiss }) => {
   const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(true);
@@ -54,13 +54,13 @@ export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettin
       )}
       isFooterAtBottom={true}
     >
-      <Dropdown
+{/*       <Dropdown
         className={styles.chatSettingsSeparator}
         selectedKey={acsIndex}
         options={acsIndexOptions}
         label="Product"
         onChange={onACSIndexDropDownChanged}
-      />
+      /> */}
       <Checkbox
         className={styles.chatSettingsSeparator}
         checked={enableInDomainOnly}
