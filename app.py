@@ -45,7 +45,7 @@ AZURE_OPENAI_MODEL_NAME = os.environ.get("AZURE_OPENAI_MODEL_NAME", "gpt-35-turb
 SHOULD_STREAM = True if AZURE_OPENAI_STREAM.lower() == "true" else False
 
 def is_chat_model():
-    if 'gpt-4' in AZURE_OPENAI_MODEL_NAME.lower():
+    if 'gpt-4' in AZURE_OPENAI_MODEL_NAME.lower() or AZURE_OPENAI_MODEL_NAME.lower() in ['gpt-35-turbo-4k', 'gpt-35-turbo-16k']:
         return True
     return False
 
@@ -86,7 +86,7 @@ def prepare_body_headers_with_data(request):
             }
         ]
     }
-    
+
     chatgpt_url = f"https://{AZURE_OPENAI_RESOURCE}.openai.azure.com/openai/deployments/{AZURE_OPENAI_MODEL}"
     if is_chat_model():
         chatgpt_url += "/chat/completions?api-version=2023-03-15-preview"
@@ -138,7 +138,7 @@ def stream_with_data(body, headers, endpoint):
                     else:
                         deltaText = lineJson["choices"][0]["messages"][0]["delta"]["content"]
                         if deltaText != "[DONE]":
-                            response["choices"][0]["messages"][1]["content"] += deltaText                
+                            response["choices"][0]["messages"][1]["content"] += deltaText
 
                     yield json.dumps(response).replace("\n", "\\n") + "\n"
     except Exception as e:

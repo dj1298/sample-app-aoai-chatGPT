@@ -171,6 +171,9 @@ static/
 frontend/node_modules
 .env
 static
+.azure/
+__pycache__/
+
 Footer
 © 2023 GitHub, Inc.
 Footer navigation
