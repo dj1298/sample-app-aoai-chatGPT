@@ -63,7 +63,6 @@ export const Answer = ({
     return (
         <>
             <Stack className={styles.answerContainer} tabIndex={0}>
-            <Stack className={styles.answerContainer}>
                 <Stack.Item style={{ width: "100%" }}>
                     <Stack horizontal horizontalAlign="space-between">
                         <Sparkle28Filled aria-hidden="true" aria-label="Answer logo" />
