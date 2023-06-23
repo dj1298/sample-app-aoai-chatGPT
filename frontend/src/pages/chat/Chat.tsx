@@ -170,8 +170,8 @@ const Chat = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <div className={mwStyles.commandsContainer}>
+        <div className={styles.container} role="main">
+             <div className={mwStyles.commandsContainer}>
                 <SettingsButton className={mwStyles.commandButton} onClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)} />
             </div>
             {showAuthMessage ? (
@@ -197,11 +197,11 @@ const Chat = () => {
                                 <img src="/MWLogo.PNG" height="233" width="233"></img>
                             </Stack>
                         ) : (
-                            <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? "40px" : "0px"}}>
+                            <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? "40px" : "0px"}} role="log">
                                 {answers.map((answer, index) => (
                                     <>
                                         {answer.role === "user" ? (
-                                            <div className={styles.chatMessageUser}>
+                                            <div className={styles.chatMessageUser} tabIndex={0}>
                                                 <div className={styles.chatMessageUserMessage}>{answer.content}</div>
                                             </div>
                                         ) : (
@@ -256,16 +256,20 @@ const Chat = () => {
                                         <span className={styles.stopGeneratingText} aria-hidden="true">Stop generating</span>
                                 </Stack>
                             )}
-                            <BroomRegular
-                                className={styles.clearChatBroom}
-                                style={{ background: isLoading || answers.length === 0 ? "#BDBDBD" : "radial-gradient(109.81% 107.82% at 100.1% 90.19%, #0F6CBD 33.63%, #2D87C3 70.31%, #8DDDD8 100%)", 
-                                        cursor: isLoading || answers.length === 0 ? "" : "pointer"}}
+                            <div
+                                role="button"
+                                tabIndex={0}
                                 onClick={clearChat}
                                 onKeyDown={e => e.key === "Enter" || e.key === " " ? clearChat() : null}
                                 aria-label="Clear session"
-                                role="button"
-                                tabIndex={0}
-                            />
+                                >
+                                <BroomRegular
+                                    className={styles.clearChatBroom}
+                                    style={{ background: isLoading || answers.length === 0 ? "#BDBDBD" : "radial-gradient(109.81% 107.82% at 100.1% 90.19%, #0F6CBD 33.63%, #2D87C3 70.31%, #8DDDD8 100%)", 
+                                            cursor: isLoading || answers.length === 0 ? "" : "pointer"}}
+                                    aria-hidden="true"
+                                />
+                            </div>
                             <QuestionInput
                                 clearOnSend
                                 placeholder="Type a new question..."
@@ -276,12 +280,13 @@ const Chat = () => {
                         <MwFooter />
                     </div>
                     {answers.length > 0 && isCitationPanelOpen && activeCitation && (
-                    <Stack.Item className={styles.citationPanel}>
+                    <Stack.Item className={styles.citationPanel} tabIndex={0} role="tabpanel" aria-label="Citations Panel">
                         <Stack horizontal className={styles.citationPanelHeaderContainer} horizontalAlign="space-between" verticalAlign="center">
                             <span className={styles.citationPanelHeader}>Citations</span>
                             <DismissRegular className={styles.citationPanelDismiss} onClick={() => setIsCitationPanelOpen(false)}/>
                         </Stack>
-                        <h5 className={styles.citationPanelTitle}>{activeCitation[2]}</h5>
+                        <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
+                        <div tabIndex={0}> 
                         <ReactMarkdown 
                             linkTarget="_blank"
                             className={styles.citationPanelContent}
@@ -289,6 +294,8 @@ const Chat = () => {
                             remarkPlugins={[remarkGfm]} 
                             rehypePlugins={[rehypeRaw]}
                         />
+                        </div>
+                        
                     </Stack.Item>
                 )}
                 </Stack>
