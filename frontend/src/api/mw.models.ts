@@ -1,5 +1,10 @@
+export enum AcsIndex {
+    M365Combined = "M365Combined",
+    MWOnPrem = "MWOnPrem",
+}
+
 export type Settings = {
-    acs_index: string | null;
+    acs_index: AcsIndex;
     in_domain_only: boolean | null;
 }
 

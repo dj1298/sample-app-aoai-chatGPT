@@ -10,6 +10,16 @@ from presidio_anonymizer.entities import OperatorConfig
 # Create a blueprint instance
 mw_blueprint = Blueprint('mw', __name__)
 
+acs_index_map = {
+    "M365Combined": "INDEX_NAME_M365COMBINED",
+    "MWOnPrem": "INDEX_NAME_MWONPREM",
+}
+
+def map_acs_index(indexId: str, defaultIndex: str) -> str:
+    env_var_name = acs_index_map[indexId]
+    index = os.environ.get(env_var_name)
+    return index if index else defaultIndex
+
 TABLE_SERVICE_CONNECTION_STRING = os.environ.get("TABLE_SERVICE_CONNECTION_STRING")
 
 if (TABLE_SERVICE_CONNECTION_STRING):

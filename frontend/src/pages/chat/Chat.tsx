@@ -22,7 +22,7 @@ import {
 } from "../../api";
 import { Answer } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
-import { Settings } from "../../api/mw.models";
+import { AcsIndex, Settings } from "../../api/mw.models";
 import { FeedbackPanel } from "../../components/FeedbackPanel/FeedbackPanel";
 import { SettingsPanel } from "../../components/SettingsPanel/SettingsPanel";
 import { SettingsButton } from "../../components/SettingsButton";
@@ -34,7 +34,7 @@ const Chat = () => {
     const [feedbackMessageIndex, setFeedbackMessageIndex] = useState(-1);
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [settings, setSettings] = useState<Settings>({
-        acs_index: "m365index",
+        acs_index: AcsIndex.M365Combined,
         in_domain_only: true,
     });
 
@@ -72,7 +72,8 @@ const Chat = () => {
         };
 
         const request: ConversationRequest = {
-            messages: [...answers.filter((answer) => answer.role !== "error"), userMessage]
+            messages: [...answers.filter((answer) => answer.role !== "error"), userMessage],
+            settings: settings,
         };
 
         let result = {} as ChatResponse;

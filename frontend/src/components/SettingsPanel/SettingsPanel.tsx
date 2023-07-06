@@ -1,6 +1,6 @@
 import { Checkbox, DefaultButton, Dropdown, IDropdownOption, Panel } from "@fluentui/react";
 import { useState } from "react";
-import { Settings } from "../../api/mw.models";
+import { AcsIndex, Settings } from "../../api/mw.models";
 
 import styles from "./SettingsPanel.module.css";
 
@@ -10,13 +10,14 @@ export interface ISettingsPanelProps {
   onDismiss: () => void;
 }
 
-/* const acsIndexOptions: IDropdownOption[] = [
-  { key: "m365index", text: "M365 Combined Index" },
-]; */
+const acsIndexOptions: IDropdownOption[] = [
+  { key: AcsIndex.M365Combined, text: "Modern Work Content" },
+  { key: AcsIndex.MWOnPrem, text: "Modern Work On-Premises Content" },
+];
 
 export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettingsChanged, onDismiss }) => {
   const [enableInDomainOnly, setEnableInDomainOnly] = useState<boolean>(true);
-  const [acsIndex, setacsIndex] = useState<string>("m365index");
+  const [acsIndex, setacsIndex] = useState<AcsIndex>(AcsIndex.M365Combined);
 
   const onACSIndexDropDownChanged = (
     _event: React.FormEvent<HTMLDivElement>,
@@ -24,7 +25,7 @@ export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettin
     _index?: number | undefined
   ): void => {
     if (option) {
-      setacsIndex(option.key.toString());
+      setacsIndex(option.key as AcsIndex);
     }
   };
 
@@ -54,13 +55,13 @@ export const SettingsPanel : React.FC<ISettingsPanelProps> = ({ isOpen, onSettin
       )}
       isFooterAtBottom={true}
     >
-{/*       <Dropdown
+      <Dropdown
         className={styles.chatSettingsSeparator}
         selectedKey={acsIndex}
         options={acsIndexOptions}
-        label="Product"
+        label="Content Catalog"
         onChange={onACSIndexDropDownChanged}
-      /> */}
+      />
       <Checkbox
         className={styles.chatSettingsSeparator}
         checked={enableInDomainOnly}

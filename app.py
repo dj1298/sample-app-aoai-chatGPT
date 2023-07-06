@@ -4,7 +4,7 @@ import logging
 import requests
 import openai
 from flask import Flask, Response, request, jsonify
-from mwapp import mw_blueprint;
+from mwapp import mw_blueprint, map_acs_index;
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -56,6 +56,7 @@ def should_use_data():
 
 def prepare_body_headers_with_data(request):
     request_messages = request.json["messages"]
+    request_settings = request.json["settings"]
 
     body = {
         "messages": request_messages,
@@ -70,7 +71,7 @@ def prepare_body_headers_with_data(request):
                 "parameters": {
                     "endpoint": f"https://{AZURE_SEARCH_SERVICE}.search.windows.net",
                     "key": AZURE_SEARCH_KEY,
-                    "indexName": AZURE_SEARCH_INDEX,
+                    "indexName": map_acs_index(request_settings["acs_index"], AZURE_SEARCH_INDEX),
                     "fieldsMapping": {
                         "contentField": AZURE_SEARCH_CONTENT_COLUMNS.split("|") if AZURE_SEARCH_CONTENT_COLUMNS else [],
                         "titleField": AZURE_SEARCH_TITLE_COLUMN if AZURE_SEARCH_TITLE_COLUMN else None,
