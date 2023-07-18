@@ -21,6 +21,7 @@ export type MWFeedback = {
     overall_response_quality: number | null;
     overall_document_quality: number | null;
     verbatim: string | null;
+    documentation_accuracy_relevance: string | null;
     inaccurate_answer: boolean | null;
     missing_info: boolean | null;
     too_long: boolean | null;

@@ -29,6 +29,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
         overall_response_quality: 3,
         overall_document_quality: 3,
         verbatim: "",
+        documentation_accuracy_relevance: "",
         inaccurate_answer: false,
         missing_info: false,
         too_long: false,
@@ -148,10 +149,18 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
             />
             <hr />
             <TextField
-                label="Additional feedback - provide details on citations and answer quality."
+                label="Answer quality"
+                placeholder="Eg. The answer was accurate, but I expected it to contain information on..."
                 multiline
                 autoAdjustHeight
                 onChange={(_ev, value) => setFeedback({ ...feedback, verbatim: value ?? "" })}
+            />
+            <TextField
+                label="Expected Document URL"
+                placeholder="Eg. I expected to see the answer cite a specific article. Or an unexpected article was cited. Please provide details of best references for this question."
+                multiline
+                autoAdjustHeight
+                onChange={(_ev, value) => setFeedback({ ...feedback, documentation_accuracy_relevance: value ?? "" })}
             />
             <hr />
             <Checkbox

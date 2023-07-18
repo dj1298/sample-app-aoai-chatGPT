@@ -46,6 +46,7 @@ def feedback():
 
 
     anonymized_verbatim = anonymize(json["verbatim"], is_feedback=True)
+    anonymized_documentation_accuracy_relevance = anonymize(json["documentation_accuracy_relevance"], is_feedback=True)
     anonymized_question = anonymize(json["question"])
     anonymized_answer = anonymize(json["answer"])
 
@@ -53,6 +54,7 @@ def feedback():
         "PartitionKey": "Global",
         "RowKey": str(id),
         "username": username,
+        "documentation_accuracy_relevance": anonymized_documentation_accuracy_relevance,
         "overall_response_quality": json["overall_response_quality"],
         "overall_document_quality": json["overall_document_quality"],
         "verbatim": anonymized_verbatim,
