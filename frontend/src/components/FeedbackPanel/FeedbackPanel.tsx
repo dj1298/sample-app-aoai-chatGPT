@@ -50,6 +50,17 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
         // allow_contact: allowContact,
     });
 
+    const getRoleMessage = (role: "user" | "tool" | "assistant") : ChatMessage | null => {
+        for (let i = 0; i < 3; i++) {
+            const searchIndex = feedbackMessageIndex - i;
+            if (searchIndex >= 0 && chatMessages[searchIndex].role === role) {
+                return chatMessages[searchIndex];
+            }
+        }
+
+        return null;
+    }
+
     useEffect(() => {
         let questionId = "";
         let question = "";
@@ -58,27 +69,26 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
         let topDocs: MWDocFeedback[] = [];
 
         if (feedbackMessageIndex >= 1) {
-            // questionId = chatMessages[feedbackMessageIndex - 1][0];
-            question = chatMessages[feedbackMessageIndex - 2].content;
-
-            // answerId = chatMessages[feedbackMessageIndex][0];
-            answer = chatMessages[feedbackMessageIndex].content;
+            question = getRoleMessage("user")?.content ?? "";
+            answer = getRoleMessage("assistant")?.content ?? "";
 
             // Parse out citations from the "tool" role message
-            let citations: Citation[] = [];
-            if (chatMessages[feedbackMessageIndex - 1].role == "tool") {
+            const toolMessage = getRoleMessage("tool");
+            if (toolMessage) {
+                let citations: Citation[] = [];
                 try {
-                    const toolMessage = JSON.parse(chatMessages[feedbackMessageIndex - 1].content) as ToolMessageContent;
-                    citations = toolMessage.citations;
+                    const toolMessageContent = JSON.parse(toolMessage.content) as ToolMessageContent;
+                    citations = toolMessageContent.citations;
                 }
                 catch {
                     // Failure to parse tool message, weird - but not fatal
                 }
+
+                topDocs = citations.map((d) => ({
+                    title: d.title ?? "",
+                    filepath: d.filepath ?? "",
+                }));
             }
-            topDocs = citations.map((d) => ({
-                title: d.title ?? "",
-                filepath: d.filepath ?? "",
-            }));
         }
 
         setFeedback({
