@@ -79,7 +79,7 @@ def feedback():
     }
 
     if (table_service):
-        table_service.insert_entity("MWGPTFeedback", tableEntity)
+        table_service.insert_entity("CSSGPTFeedback", tableEntity)
 
     return jsonify({"success": True, "feedback": json})
 
