@@ -38,7 +38,7 @@ const Layout = () => {
                 <div className={styles.headerContainer}>
                     <Stack horizontal verticalAlign="center">
                         <Link to="/" className={styles.headerTitleContainer}>
-                            <h3 className={styles.headerTitle}>Modern Work GPT</h3>
+                            <h3 className={styles.headerTitle}>CSS GPT</h3>
                         </Link>
                         <nav>
                             <ul className={mwStyles.headerNavList}>
