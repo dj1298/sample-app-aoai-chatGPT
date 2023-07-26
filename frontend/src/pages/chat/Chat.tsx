@@ -204,6 +204,7 @@ const Chat = () => {
                             <Stack className={styles.chatEmptyState}>
                                 <h1 className={styles.chatEmptyStateTitle}>Ask a question to start.</h1>
                                 <h2 className={styles.chatEmptyStateSubtitle}><i>"Entering End-User Personally Identifiable Information (EUPII) and Customer Data is strictly forbidden."</i></h2>
+                                {/* <img src="/CSS-GPT-Logo3-250-250.png" height="250" width="250"></img> */}
                             </Stack>
                         ) : (
                             <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? "40px" : "0px"}} role="log">
