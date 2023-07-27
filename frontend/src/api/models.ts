@@ -3,6 +3,7 @@ import { Settings } from "./mw.models";
 export type AskResponse = {
     answer: string;
     citations: Citation[];
+    diagnostics: Diagnostic[];
     error?: string;
 };
 
@@ -17,8 +18,13 @@ export type Citation = {
     reindex_id: string | null;
 }
 
+export type Diagnostic = {
+    diagnosticLink: string | null;
+}
+
 export type ToolMessageContent = {
     citations: Citation[];
+    diagnostics: Diagnostic[];
     intent: string;
 }
 

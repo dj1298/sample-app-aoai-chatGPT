@@ -42,3 +42,9 @@ export type MWFeedback = {
     in_domain: boolean | null;
     // allow_contact: boolean | null;
 }
+
+export type PillarDiagnosticParameters = {
+    tenant_id: string | null;
+    case_id: string | null;
+    primary_smtp_address: string | null;
+}

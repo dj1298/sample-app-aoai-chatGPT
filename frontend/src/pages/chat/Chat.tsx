@@ -18,7 +18,8 @@ import {
     Citation,
     ToolMessageContent,
     ChatResponse,
-    getUserInfo
+    getUserInfo,
+    Diagnostic
 } from "../../api";
 import { Answer } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
@@ -26,6 +27,8 @@ import { AcsIndex, Settings } from "../../api/mw.models";
 import { FeedbackPanel } from "../../components/FeedbackPanel/FeedbackPanel";
 import { SettingsPanel } from "../../components/SettingsPanel/SettingsPanel";
 import { SettingsButton } from "../../components/SettingsButton";
+import { DiagnosticButton} from "../../components/DiagnosticButton"
+import { DiagnosticPanel } from "../../components/DiagnosticPanel/DiagnosticPanel";
 import { MwFooter } from "../../components/MwFooter/MwFooter";
 
 
@@ -44,6 +47,7 @@ const Chat = () => {
     const [showLoadingMessage, setShowLoadingMessage] = useState<boolean>(false);
     const [activeCitation, setActiveCitation] = useState<[content: string, id: string, title: string, filepath: string, url: string, metadata: string]>();
     const [isCitationPanelOpen, setIsCitationPanelOpen] = useState<boolean>(false);
+    const [isDiagnosticPanelOpen, setIsDiagnosticPanelOpen] = useState(false);
     const [answers, setAnswers] = useState<ChatMessage[]>([]);
     const abortFuncs = useRef([] as AbortController[]);
     const [showAuthMessage, setShowAuthMessage] = useState<boolean>(true);
@@ -152,11 +156,28 @@ const Chat = () => {
         setIsCitationPanelOpen(true);
     };
 
+    const onShowDiagnostic = (diagnostic: Diagnostic) => {
+        setIsDiagnosticPanelOpen(true);
+    }
+
     const parseCitationFromMessage = (message: ChatMessage) => {
         if (message.role === "tool") {
             try {
                 const toolMessage = JSON.parse(message.content) as ToolMessageContent;
                 return toolMessage.citations;
+            }
+            catch {
+                return [];
+            }
+        }
+        return [];
+    }
+
+    const parseDiagnosticsFromMessage = (message: ChatMessage) => {
+        if (message.role === "tool") {
+            try {
+                const toolMessage = JSON.parse(message.content) as ToolMessageContent;
+                return toolMessage.diagnostics;
             }
             catch {
                 return [];
@@ -183,6 +204,7 @@ const Chat = () => {
         <div className={styles.container} role="main">
              <div className={mwStyles.commandsContainer}>
                 <SettingsButton className={mwStyles.commandButton} onClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)} />
+                <DiagnosticButton className={mwStyles.commandButton} onClick={() => setIsDiagnosticPanelOpen(!isDiagnosticPanelOpen)} />
             </div>
             {showAuthMessage ? (
                 <Stack className={styles.chatEmptyState}>
@@ -220,8 +242,10 @@ const Chat = () => {
                                                     answer={{
                                                         answer: answer.content,
                                                         citations: parseCitationFromMessage(answers[index - 1]),
+                                                        diagnostics: parseDiagnosticsFromMessage(answers[index - 1]),
                                                     }}
                                                     onCitationClicked={c => onShowCitation(c)}
+                                                    onDiagnosticClicked={d => onShowDiagnostic(d)}
                                                     onLikeResponseClicked={() => onLikeResponse(index)}
                                                     onDislikeResponseClicked={() => onDislikeResponse(index)}
                                                 />
@@ -244,9 +268,11 @@ const Chat = () => {
                                             <Answer
                                                 answer={{
                                                     answer: "Generating answer...",
-                                                    citations: []
+                                                    citations: [],
+                                                    diagnostics: [],
                                                 }}
                                                 onCitationClicked={() => null}
+                                                onDiagnosticClicked={() => null}
                                                 onLikeResponseClicked={() => null}
                                                 onDislikeResponseClicked={() => null}
                                             />
@@ -335,6 +361,10 @@ const Chat = () => {
                     setSettings(newSettings);
                 }}
                 onDismiss={() => setIsConfigPanelOpen(false)}
+            />
+            <DiagnosticPanel
+                isOpen={isDiagnosticPanelOpen}
+                onDismiss={() => setIsDiagnosticPanelOpen(false)}
             />
         </div>
     );
