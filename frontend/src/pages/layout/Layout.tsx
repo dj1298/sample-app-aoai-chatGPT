@@ -57,6 +57,11 @@ const Layout = () => {
                                         Data Privacy Notice
                                     </NavLink>
                                 </li>
+                                <li>
+                                    <NavLink to="https://aka.ms/CSSGPTProducts" target="_blank" className={({ isActive }) => (isActive ? mwStyles.headerNavPageLinkActive : mwStyles.headerNavPageLink)}>
+                                        CSS GPT Supported Products
+                                    </NavLink>
+                                </li>
                             </ul>
                         </nav>
                     </Stack>
