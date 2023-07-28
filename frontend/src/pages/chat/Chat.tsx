@@ -9,7 +9,7 @@ import rehypeRaw from "rehype-raw";
 import styles from "./Chat.module.css";
 import Azure from "../../assets/Azure.svg";
 import AzureOpenAILogo from "../../assets/AzureOpenAILogo.svg";
-import CSSGPT10_250_250 from "../../../public/CSS-GPT-Logo3-250-250.png"
+import CSSGPT10_250_250 from "../../assets/CSSGPT10_250_250.jpg"
 import mwStyles from "./Chat.mw.module.css";
 
 import {
