@@ -31,12 +31,7 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
         verbatim: "",
         documentation_accuracy_relevance: "",
         inaccurate_answer: false,
-        missing_info: false,
-        too_long: false,
-        too_short: false,
         confusing: false,
-        offensive: false,
-        biased: false,
         outdated: false,
         repetitive: false,
         fantastic: false,
@@ -169,34 +164,9 @@ export const FeedbackPanel: React.FC<IFeedbackPanelProps> = ({
                 onChange={(_ev, value) => setFeedback({ ...feedback, inaccurate_answer: !!value })}
             />
             <Checkbox
-                label="Missing information"
-                className={styles.checkBox}
-                onChange={(_ev, value) => setFeedback({ ...feedback, missing_info: !!value })}
-            />
-            <Checkbox
-                label="Too long"
-                className={styles.checkBox}
-                onChange={(_ev, value) => setFeedback({ ...feedback, too_long: !!value })}
-            />
-            <Checkbox
-                label="Too short"
-                className={styles.checkBox}
-                onChange={(_ev, value) => setFeedback({ ...feedback, too_short: !!value })}
-            />
-            <Checkbox
                 label="Confusing"
                 className={styles.checkBox}
                 onChange={(_ev, value) => setFeedback({ ...feedback, confusing: !!value })}
-            />
-            <Checkbox
-                label="Offensive"
-                className={styles.checkBox}
-                onChange={(_ev, value) => setFeedback({ ...feedback, offensive: !!value })}
-            />
-            <Checkbox
-                label="Biased"
-                className={styles.checkBox}
-                onChange={(_ev, value) => setFeedback({ ...feedback, biased: !!value })}
             />
             <Checkbox
                 label="Outdated"

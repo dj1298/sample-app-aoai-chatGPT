@@ -23,12 +23,7 @@ export type MWFeedback = {
     verbatim: string | null;
     documentation_accuracy_relevance: string | null;
     inaccurate_answer: boolean | null;
-    missing_info: boolean | null;
-    too_long: boolean | null;
-    too_short: boolean | null;
     confusing: boolean | null;
-    offensive: boolean | null;
-    biased: boolean | null;
     outdated: boolean | null;
     repetitive: boolean | null;
     fantastic: boolean | null;
