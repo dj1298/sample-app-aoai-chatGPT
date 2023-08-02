@@ -153,7 +153,7 @@ const Chat = () => {
     useEffect(() => chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" }), [showLoadingMessage]);
 
     const onShowCitation = (citation: Citation) => {
-        setActiveCitation([citation.content, citation.id, citation.title ?? "", citation.filepath ?? "", "", ""]);
+        setActiveCitation([citation.content, citation.id, citation.title ?? "", citation.filepath ?? "", citation.url ?? "", ""]);
         setIsCitationPanelOpen(true);
     };
 
@@ -328,7 +328,13 @@ const Chat = () => {
                             <span className={styles.citationPanelHeader}>Citations</span>
                             <DismissRegular className={styles.citationPanelDismiss} onClick={() => setIsCitationPanelOpen(false)}/>
                         </Stack>
-                        <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
+                                {activeCitation[4] ? (
+                                    <a href={activeCitation[4]} target="_blank">
+                                        <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
+                                    </a>
+                                ) : (
+                                    <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
+                                )}
                         <div tabIndex={0}> 
                         <ReactMarkdown 
                             linkTarget="_blank"

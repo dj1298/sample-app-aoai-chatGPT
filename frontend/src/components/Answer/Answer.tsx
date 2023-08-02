@@ -174,7 +174,6 @@ export const Answer = ({
                                 >
                                     <div className={styles.citation}>{idx}</div>
                                     {createCitationFilepath(citation, idx, true)}
-                                    <a href={createExternalLink(citation.url)} target="_blank" rel="noopener noreferrer">External link</a>
                                 </span>);
                         })}
                     </div>
