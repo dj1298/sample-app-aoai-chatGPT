@@ -54,6 +54,11 @@ export const Answer = ({
         primary_smtp_address: "",
     });
 
+    const createExternalLink = (citationURL: string | null): string | undefined => {
+        const linkHref = citationURL !== null ? citationURL : undefined;
+        return linkHref;
+    };
+
     useEffect(() => {
         setChevronIsExpanded(isRefAccordionOpen);
         setDiagnosticChevronIsExpanded(diagnosticChevronIsExpanded);
@@ -169,6 +174,7 @@ export const Answer = ({
                                 >
                                     <div className={styles.citation}>{idx}</div>
                                     {createCitationFilepath(citation, idx, true)}
+                                    <a href={createExternalLink(citation.url)} target="_blank" rel="noopener noreferrer">External link</a>
                                 </span>);
                         })}
                     </div>

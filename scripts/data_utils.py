@@ -201,6 +201,19 @@ class TextParser(BaseParser):
                 break
         return title
 
+    def get_last_line(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            if lines:
+                last_line = lines[-1].strip()  # Remove any leading/trailing whitespace characters
+                return last_line
+            else:
+                return None  # File is empty, there are no lines to read
+
+    def contains_document_link(text):
+        pattern = r'\bdocument_link\b'
+        return bool(re.search(pattern, text))
+
     def parse(self, content: str, file_name: Optional[str] = None) -> Document:
         """Parses the given content.
         Args:
@@ -599,6 +612,7 @@ def process_file(
         ignore_errors: bool = True,
         num_tokens: int = 1024,
         min_chunk_size: int = 10,
+        document_link = str,
         url_prefix = None,
         token_overlap: int = 0,
         extensions_to_process: List[str] = FILE_FORMAT_DICT.keys(),
@@ -611,7 +625,7 @@ def process_file(
 
     is_error = False
     try:
-        url_path = None
+        url_path = document_link
         rel_file_path = os.path.relpath(file_path, directory_path)
         if url_prefix:
             url_path = url_prefix + rel_file_path
@@ -685,9 +699,18 @@ def chunk_directory(
         print("Single process to chunk and parse the files. --njobs > 1 can help performance.")
         for file_path in tqdm(files_to_process):
             total_files += 1
+            
+            # Code to grab the last line in the file, check to ensure it has 'document_link"
+            # then only take the actaul URL, and will use it in the process_file() call below
+            text_parser = TextParser()
+            last_line = text_parser.get_last_line(file_path)
+            document_Link = last_line.split('document_link: ', 1)
+
+
             result, is_error = process_file(file_path=file_path,directory_path=directory_path, ignore_errors=ignore_errors,
                                        num_tokens=num_tokens,
                                        min_chunk_size=min_chunk_size, url_prefix=url_prefix,
+                                       document_link=document_Link[1],
                                        token_overlap=token_overlap,
                                        extensions_to_process=extensions_to_process,
                                        form_recognizer_client=form_recognizer_client, use_layout=use_layout)
