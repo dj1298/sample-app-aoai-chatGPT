@@ -9,6 +9,7 @@ import rehypeRaw from "rehype-raw";
 import styles from "./Chat.module.css";
 import Azure from "../../assets/Azure.svg";
 import AzureOpenAILogo from "../../assets/AzureOpenAILogo.svg";
+import CSSGPT10_250_250 from "../../assets/CSSGPT10_250_250.jpg"
 import mwStyles from "./Chat.mw.module.css";
 
 import {
@@ -226,7 +227,7 @@ const Chat = () => {
                             <Stack className={styles.chatEmptyState}>
                                 <h1 className={styles.chatEmptyStateTitle}>Ask a question to start.</h1>
                                 <h2 className={styles.chatEmptyStateSubtitle}><i>"Entering End-User Personally Identifiable Information (EUPII) and Customer Data is strictly forbidden."</i></h2>
-                                <img src="/CSSGPT10_250_250.jpg" height="250" width="250"></img>
+                                <img src={CSSGPT10_250_250} height="250" width="250"></img>
                             </Stack>
                         ) : (
                             <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? "40px" : "0px"}} role="log">
