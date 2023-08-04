@@ -1,14 +1,14 @@
 [
     {
-        "data_path": "C:\\repos\\Youtube-transcribe\\MicrosoftTeams",
-        "location": "West US 2",
-        "subscription_id": "3551fa72-ccf0-439a-98c0-293bdcd4011e",
-        "resource_group": "Project-Moon",
-        "search_service_name": "projectmoonsearch",
-        "index_name": "youtube",
+        "data_path": "C:\\repos\\combinedindex_8_1_23",
+        "location": "East US ",
+        "subscription_id": "a2285f29-2c21-4809-8833-19cfc4f493c8",
+        "resource_group": "CSSGPT-EUS",
+        "search_service_name": "cssgptsearchservice",
+        "index_name": "dj-test-combinedindex_8_1_23-orginal-script",
         "chunk_size": 1024,
         "token_overlap": 128,
         "semantic_config_name": "default",
-        "language": "<Language to support for example use 'en' for English. Checked supported languages here under lucene - https://learn.microsoft.com/en-us/azure/search/index-add-language-analyzers"
+        "language": "en"
     }
 ]
