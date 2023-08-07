@@ -1,11 +1,11 @@
 [
     {
-        "data_path": "C:\\repos\\ATADocs",
+        "data_path": "C:\\repos\\combinedindex_8_1_23",
         "location": "East US ",
         "subscription_id": "a2285f29-2c21-4809-8833-19cfc4f493c8",
         "resource_group": "CSSGPT-EUS",
         "search_service_name": "cssgptsearchservice",
-        "index_name": "dj-test-4",
+        "index_name": "dj-test-combinedindex_8_1_23_new_script",
         "chunk_size": 1024,
         "token_overlap": 128,
         "semantic_config_name": "default",
