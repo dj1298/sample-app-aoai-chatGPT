@@ -3,7 +3,7 @@ import { Settings } from "./mw.models";
 export type AskResponse = {
     answer: string;
     citations: Citation[];
-    diagnostics: Diagnostic[];
+    //diagnostics: Diagnostic[];
     error?: string;
 };
 

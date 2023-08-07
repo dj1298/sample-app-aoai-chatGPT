@@ -206,7 +206,7 @@ const Chat = () => {
         <div className={styles.container} role="main">
              <div className={mwStyles.commandsContainer}>
                 <SettingsButton className={mwStyles.commandButton} onClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)} />
-                <DiagnosticButton className={mwStyles.commandButton} onClick={() => setIsDiagnosticPanelOpen(!isDiagnosticPanelOpen)} />
+                {/* <DiagnosticButton className={mwStyles.commandButton} onClick={() => setIsDiagnosticPanelOpen(!isDiagnosticPanelOpen)} /> */}
             </div>
             {showAuthMessage ? (
                 <Stack className={styles.chatEmptyState}>
@@ -244,10 +244,10 @@ const Chat = () => {
                                                     answer={{
                                                         answer: answer.content,
                                                         citations: parseCitationFromMessage(answers[index - 1]),
-                                                        diagnostics: parseDiagnosticsFromMessage(answers[index - 1]),
+                                                        // diagnostics: parseDiagnosticsFromMessage(answers[index - 1]),
                                                     }}
                                                     onCitationClicked={c => onShowCitation(c)}
-                                                    onDiagnosticClicked={d => onShowDiagnostic(d)}
+                                                    //onDiagnosticClicked={d => onShowDiagnostic(d)}
                                                     onLikeResponseClicked={() => onLikeResponse(index)}
                                                     onDislikeResponseClicked={() => onDislikeResponse(index)}
                                                 />
@@ -271,10 +271,10 @@ const Chat = () => {
                                                 answer={{
                                                     answer: "Generating answer...",
                                                     citations: [],
-                                                    diagnostics: [],
+                                                    //diagnostics: [],
                                                 }}
                                                 onCitationClicked={() => null}
-                                                onDiagnosticClicked={() => null}
+                                                //onDiagnosticClicked={() => null}
                                                 onLikeResponseClicked={() => null}
                                                 onDislikeResponseClicked={() => null}
                                             />

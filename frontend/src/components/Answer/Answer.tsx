@@ -16,7 +16,7 @@ import { PillarDiagnosticParameters } from "../../api/mw.models";
 interface Props {
     answer: AskResponse;
     onCitationClicked: (citedDocument: Citation) => void;
-    onDiagnosticClicked: (citedDiagnostic: Diagnostic) => void;
+    //onDiagnosticClicked: (citedDiagnostic: Diagnostic) => void;
     onLikeResponseClicked: () => void;
     onDislikeResponseClicked: () => void;
 }
@@ -24,7 +24,7 @@ interface Props {
 export const Answer = ({
     answer,
     onCitationClicked,
-    onDiagnosticClicked,
+    //onDiagnosticClicked,
     onLikeResponseClicked,
     onDislikeResponseClicked
 }: Props) => {
