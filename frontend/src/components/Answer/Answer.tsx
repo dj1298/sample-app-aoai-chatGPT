@@ -187,7 +187,7 @@ export const Answer = ({
                                 tabIndex={0} 
                                 role="link" 
                                 key={idx} 
-                                onClick={() => onDiagnosticClicked(diagnostic)} 
+                                // onClick={() => onDiagnosticClicked(diagnostic)} 
                                 className={styles.citationContainer}
                                 aria-label="Dagnostic"
                             >
