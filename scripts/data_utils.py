@@ -202,13 +202,16 @@ class TextParser(BaseParser):
         return title
 
     def get_last_line(self, file_path):
-        with open(file_path, 'r', encoding='utf-8') as file:
-            lines = file.readlines()
-            if lines:
-                last_line = lines[-1].strip()  # Remove any leading/trailing whitespace characters
-                return last_line
-            else:
-                return None  # File is empty, there are no lines to read
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                lines = file.readlines()
+                if lines:
+                    last_line = lines[-1].strip()  # Remove any leading/trailing whitespace characters
+                    return last_line
+        except UnicodeDecodeError:
+            return None
+        else:
+            return None  # File is empty, there are no lines to read
 
     def contains_document_link(text):
         pattern = r'\bdocument_link\b'
@@ -704,16 +707,28 @@ def chunk_directory(
             # then only take the actaul URL, and will use it in the process_file() call below
             text_parser = TextParser()
             last_line = text_parser.get_last_line(file_path)
-            document_Link = last_line.split('document_link: ', 1)
 
-
-            result, is_error = process_file(file_path=file_path,directory_path=directory_path, ignore_errors=ignore_errors,
+            if last_line is not None:
+                document_Link = last_line.split('document_link: ', 1)
+            
+                result, is_error = process_file(file_path=file_path,directory_path=directory_path, ignore_errors=ignore_errors,
                                        num_tokens=num_tokens,
                                        min_chunk_size=min_chunk_size, url_prefix=url_prefix,
                                        document_link=document_Link[1],
                                        token_overlap=token_overlap,
                                        extensions_to_process=extensions_to_process,
                                        form_recognizer_client=form_recognizer_client, use_layout=use_layout)
+            else:
+                result, is_error = process_file(file_path=file_path,directory_path=directory_path, ignore_errors=ignore_errors,
+                                       num_tokens=num_tokens,
+                                       min_chunk_size=min_chunk_size, url_prefix=url_prefix,
+                                       document_link="",
+                                       token_overlap=token_overlap,
+                                       extensions_to_process=extensions_to_process,
+                                       form_recognizer_client=form_recognizer_client, use_layout=use_layout)
+                
+                
+            
             if is_error:
                 num_files_with_errors += 1
                 continue
@@ -726,6 +741,7 @@ def chunk_directory(
         process_file_partial = partial(process_file, directory_path=directory_path, ignore_errors=ignore_errors,
                                        num_tokens=num_tokens,
                                        min_chunk_size=min_chunk_size, url_prefix=url_prefix,
+                                       document_link="",
                                        token_overlap=token_overlap,
                                        extensions_to_process=extensions_to_process,
                                        form_recognizer_client=None, use_layout=use_layout)
@@ -733,6 +749,16 @@ def chunk_directory(
             futures = list(tqdm(executor.map(process_file_partial, files_to_process), total=len(files_to_process)))
             for result, is_error in futures:
                 total_files += 1
+                # Code to grab the last line in the file, check to ensure it has 'document_link"
+                # then only take the actaul URL, and will use it in the process_file() call below
+                text_parser = TextParser()
+                last_line = text_parser.get_last_line(files_to_process[total_files -1])
+
+                if last_line is not None:
+                    document_Link = last_line.split('document_link: ', 1)
+                    for chunk in result.chunks:
+                        chunk.url = document_Link[1]
+
                 if is_error:
                     num_files_with_errors += 1
                     continue
