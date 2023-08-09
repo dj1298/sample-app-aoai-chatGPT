@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "react-autosuggest": "^10.1.0",
+    "react-instantsearch-dom": "^6.40.4"
+  },
+  "devDependencies": {
+    "@types/material-ui": "^0.21.12",
+    "@types/react-autosuggest": "^10.1.6",
+    "@types/react-instantsearch-dom": "^6.12.3",
+    "material-ui": "^0.20.2",
+    "rxjs": "^7.8.1"
+  }
+}

@@ -3,9 +3,13 @@ import { Stack, TextField } from "@fluentui/react";
 import { SendRegular } from "@fluentui/react-icons";
 import Send from "../../assets/Send.svg";
 import styles from "./QuestionInput.module.css";
+import AutosuggestComponent from "./AutoSuggest";
+
+import Autosuggest, { SuggestionsFetchRequestedParams } from 'react-autosuggest';
+const suggestions: string[] = ['How do I configure Teams guest access?', 'How do I configure Teams direct access?', 'How do I configure Teams meeting policies?'];
 
 interface Props {
-    onSend: (question: string) => void;
+    onSend: (value: string) => void;
     disabled: boolean;
     placeholder?: string;
     clearOnSend?: boolean;
@@ -13,16 +17,18 @@ interface Props {
 
 export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Props) => {
     const [question, setQuestion] = useState<string>("");
+    const [value, setValue] = useState<string>('');
+    const [suggestionsList, setSuggestionsList] = useState<string[]>([]);
 
     const sendQuestion = () => {
-        if (disabled || !question.trim()) {
+        if (disabled || !value.trim()) {
             return;
         }
 
-        onSend(question);
+        onSend(value);
 
         if (clearOnSend) {
-            setQuestion("");
+            setValue("");
         }
     };
 
@@ -34,10 +40,42 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
     };
 
     const onQuestionChange = (_ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-        setQuestion(newValue || "");
+        setValue(newValue || "");
+
     };
 
-    const sendQuestionDisabled = disabled || !question.trim();
+    const sendQuestionDisabled = disabled || !value.trim();
+    
+
+    const getSuggestions = (inputValue: string): string[] => {
+        return suggestions.filter(suggestion =>
+            suggestion.toLowerCase().includes(inputValue.toLowerCase())
+        );
+    };
+
+    const onSuggestionsFetchRequested = ({ value }: SuggestionsFetchRequestedParams) => {
+        setSuggestionsList(getSuggestions(value));
+    };
+
+    const onSuggestionsClearRequested = () => {
+        setSuggestionsList([]);
+    };
+
+    const onSuggestionSelected = (_event: React.FormEvent, { suggestionValue }: { suggestionValue: string }) => {
+        // Handle the selected suggestion here
+        setValue(suggestionValue);
+    };
+
+    const inputProps = {
+        value,
+        onChange: (_event: React.FormEvent, { newValue }: { newValue: string }) => {
+        setValue(newValue);
+        }
+    };
+
+
+
+
 
     return (
         <Stack horizontal className={styles.questionInputContainer}>
@@ -47,7 +85,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
                 multiline
                 resizable={false}
                 borderless
-                value={question}
+                value={value}
                 onChange={onQuestionChange}
                 onKeyDown={onEnterPress}
             />
@@ -65,6 +103,16 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
                 }
             </div>
             <div className={styles.questionInputBottomBorder} />
+            
+            <Autosuggest 
+                suggestions={suggestionsList}
+                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={onSuggestionsClearRequested}
+                onSuggestionSelected={onSuggestionSelected}
+                getSuggestionValue={suggestion => suggestion}
+                renderSuggestion={suggestion => <div>{suggestion}</div>}
+                inputProps={inputProps}
+            />
         </Stack>
     );
 };
