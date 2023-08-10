@@ -8,7 +8,10 @@ import AutosuggestComponent from "./AutoSuggest";
 import Autosuggest, { SuggestionsFetchRequestedParams } from 'react-autosuggest';
 
 type Suggestion = {
+    displayText: string;
     query: string;
+    searchkind: string;
+    url: string;
 };
 
 type SuggestionGroup = {
@@ -74,7 +77,11 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
     const onSuggestionSelected = (_event: React.FormEvent, { suggestionValue }: { suggestionValue: string }) => {
         // Handle the selected suggestion here
         setValue(suggestionValue);
-        fetchSuggestions(suggestionValue)
+        fetchSuggestions(suggestionValue);
+    };
+
+    const onBingSuggestionSelected = (group: SuggestionGroup, idx: number) => {
+        setValue(group.searchSuggestions[idx].displayText);
     };
 
     const inputProps = {
@@ -135,9 +142,11 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
                 <ul>
                     {bingSuggestions.map((group, index: number) => (
                         <li key={index}>
-                            {group.searchSuggestions.map((suggestion, idx: number) => (
-                                <div key={idx}>{suggestion.query}</div>
-                            ))}
+                            <a href="#" onClick={() => onBingSuggestionSelected(group, index)}>
+                                {group.searchSuggestions.map((suggestion, idx: number) => (
+                                    <div key={idx}>{suggestion.query}</div>
+                                ))}
+                            </a>
                         </li>
                     ))}
                 </ul>
