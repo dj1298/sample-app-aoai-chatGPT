@@ -80,8 +80,8 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
         fetchSuggestions(suggestionValue);
     };
 
-    const onBingSuggestionSelected = (group: SuggestionGroup, idx: number) => {
-        setValue(group.searchSuggestions[idx].displayText);
+    const onBingSuggestionSelected = (suggestion: Suggestion) => {
+        setValue(suggestion.displayText);
     };
 
     const inputProps = {
@@ -142,11 +142,10 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
                 <ul>
                     {bingSuggestions.map((group, index: number) => (
                         <li key={index}>
-                            <a href="#" onClick={() => onBingSuggestionSelected(group, index)}>
-                                {group.searchSuggestions.map((suggestion, idx: number) => (
-                                    <div key={idx}>{suggestion.query}</div>
+                                  {group.searchSuggestions.map((suggestion, idx: number) => (
+                                    <div key={idx}><a href="#" onClick={() => onBingSuggestionSelected(suggestion)}>{suggestion.query}</a>
+                                    </div>
                                 ))}
-                            </a>
                         </li>
                     ))}
                 </ul>
