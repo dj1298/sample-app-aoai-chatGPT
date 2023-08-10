@@ -6,6 +6,7 @@ from presidio_analyzer import AnalyzerEngine
 from presidio_analyzer.nlp_engine import NlpEngineProvider
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
+import requests
 
 # Create a blueprint instance
 mw_blueprint = Blueprint('mw', __name__)
@@ -22,6 +23,9 @@ def map_acs_index(indexId: str, defaultIndex: str) -> str:
 
 TABLE_SERVICE_CONNECTION_STRING = os.environ.get("TABLE_SERVICE_CONNECTION_STRING")
 
+BING_API_KEY = os.environ.get("BING_API_KEY")
+BING_AUTOSUGGEST_URL = os.environ.get("BING_AUTOSUGGEST_URL")
+
 if (TABLE_SERVICE_CONNECTION_STRING):
     table_service = TableService(connection_string=TABLE_SERVICE_CONNECTION_STRING)
 
@@ -30,6 +34,18 @@ def azureindexdate():
     AZURE_INDEX_DATE = os.environ.get("AZURE_INDEX_DATE")
     return AZURE_INDEX_DATE
 
+@mw_blueprint.route('/get_autosuggestions', methods=['GET'])
+def get_autosuggestions():
+    query = request.args.get('query', '')
+    market = 'en-us'
+    headers = {'Ocp-Apim-Subscription-Key': BING_API_KEY}
+    params = {'q': query}
+    response = requests.get(BING_AUTOSUGGEST_URL, headers=headers, params=params)
+    suggestions = response.json().get('suggestionGroups', [])
+    print(query)
+    print(response)
+    print(suggestions)
+    return jsonify(suggestions)
 
 @mw_blueprint.route("/feedback", methods=["POST"])
 def feedback():

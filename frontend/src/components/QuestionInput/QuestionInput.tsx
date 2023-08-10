@@ -6,7 +6,15 @@ import styles from "./QuestionInput.module.css";
 import AutosuggestComponent from "./AutoSuggest";
 
 import Autosuggest, { SuggestionsFetchRequestedParams } from 'react-autosuggest';
-const suggestions: string[] = ['How do I configure Teams guest access?', 'How do I configure Teams direct access?', 'How do I configure Teams meeting policies?'];
+
+type Suggestion = {
+    query: string;
+};
+
+type SuggestionGroup = {
+    name: string;
+    searchSuggestions: Suggestion[];
+};
 
 interface Props {
     onSend: (value: string) => void;
@@ -19,6 +27,8 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
     const [question, setQuestion] = useState<string>("");
     const [value, setValue] = useState<string>('');
     const [suggestionsList, setSuggestionsList] = useState<string[]>([]);
+    const suggestions: string[] = ['How do I configure Teams guest access?', 'How do I configure Teams direct access?', 'How do I configure Teams meeting policies?'];
+    const [bingSuggestions, setBingSuggestions] = useState<SuggestionGroup[]>([]);
 
     const sendQuestion = () => {
         if (disabled || !value.trim()) {
@@ -64,6 +74,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
     const onSuggestionSelected = (_event: React.FormEvent, { suggestionValue }: { suggestionValue: string }) => {
         // Handle the selected suggestion here
         setValue(suggestionValue);
+        fetchSuggestions(suggestionValue)
     };
 
     const inputProps = {
@@ -73,13 +84,16 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
         }
     };
 
-
-
+    const fetchSuggestions = async (query: string) => {
+        const response = await fetch(`/get_autosuggestions?query=${query}`);
+        const data = await response.json();
+        setBingSuggestions(data);
+    };
 
 
     return (
         <Stack horizontal className={styles.questionInputContainer}>
-            <TextField
+            {/* <TextField
                 className={styles.questionInputTextArea}
                 placeholder={placeholder}
                 multiline
@@ -88,6 +102,15 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
                 value={value}
                 onChange={onQuestionChange}
                 onKeyDown={onEnterPress}
+            /> */}
+            <Autosuggest 
+                suggestions={suggestionsList}
+                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={onSuggestionsClearRequested}
+                onSuggestionSelected={onSuggestionSelected}
+                getSuggestionValue={suggestion => suggestion}
+                renderSuggestion={suggestion => <div>{suggestion}</div>}
+                inputProps={inputProps}
             />
             <div className={styles.questionInputSendButtonContainer} 
                 role="button" 
@@ -103,16 +126,22 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
                 }
             </div>
             <div className={styles.questionInputBottomBorder} />
-            
-            <Autosuggest 
-                suggestions={suggestionsList}
-                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={onSuggestionsClearRequested}
-                onSuggestionSelected={onSuggestionSelected}
-                getSuggestionValue={suggestion => suggestion}
-                renderSuggestion={suggestion => <div>{suggestion}</div>}
-                inputProps={inputProps}
-            />
+            <div>
+                <input
+                    type="text"
+                    placeholder="Search"
+                    onChange={(e) => fetchSuggestions(e.target.value)}
+                />
+                <ul>
+                    {bingSuggestions.map((group, index: number) => (
+                        <li key={index}>
+                            {group.searchSuggestions.map((suggestion, idx: number) => (
+                                <div key={idx}>{suggestion.query}</div>
+                            ))}
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </Stack>
     );
 };
