@@ -8,9 +8,23 @@ from flask import Flask, Response, request, jsonify
 from mwapp import mw_blueprint, map_acs_index;
 from dotenv import load_dotenv
 
+from opentelemetry.sdk._logs import (
+    LoggerProvider,
+    LoggingHandler,
+)
+from opentelemetry._logs import (
+    get_logger_provider,
+    set_logger_provider,
+)
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+
+from azure.monitor.opentelemetry.exporter import AzureMonitorLogExporter
+
 load_dotenv()
 
 app = Flask(__name__, static_folder="static")
+
+
 
 # Static Files
 @app.route("/")
@@ -53,6 +67,24 @@ AZURE_OPENAI_STREAM = os.environ.get("AZURE_OPENAI_STREAM", "true")
 AZURE_OPENAI_MODEL_NAME = os.environ.get("AZURE_OPENAI_MODEL_NAME", "gpt-35-turbo") # Name of the model, e.g. 'gpt-35-turbo' or 'gpt-4'
 
 SHOULD_STREAM = True if AZURE_OPENAI_STREAM.lower() == "true" else False
+
+# OpenTelemetry logging
+APP_INSIGHTS_CONNECTION_STRING = os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING")
+logger_provider = LoggerProvider()
+set_logger_provider(logger_provider)
+
+exporter = AzureMonitorLogExporter(
+    connection_string=os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING")
+)
+
+logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
+handler = LoggingHandler()
+
+# Attach LoggingHandler to root logger
+logging.getLogger().addHandler(handler)
+logging.getLogger().setLevel(logging.NOTSET)
+
+logger = logging.getLogger(__name__)
 
 def is_chat_model():
     if 'gpt-4' in AZURE_OPENAI_MODEL_NAME.lower() or AZURE_OPENAI_MODEL_NAME.lower() in ['gpt-35-turbo-4k', 'gpt-35-turbo-16k']:
@@ -153,6 +185,7 @@ def stream_with_data(body, headers, endpoint):
 
                     yield json.dumps(response).replace("\n", "\\n") + "\n"
     except Exception as e:
+        logger.exception("Error:" str(e))
         yield json.dumps({"error": str(e)}).replace("\n", "\\n") + "\n"
 
 
@@ -250,11 +283,15 @@ def conversation():
     try:
         use_data = should_use_data()
         if use_data:
+            logger.debug("Call to /Conversation")
             return conversation_with_data(request)
+            
         else:
+            logger.debug("Call to /Conversation")
             return conversation_without_data(request)
     except Exception as e:
         logging.exception("Exception in /conversation")
+        logger.exception("Exception in /Conversation")
         return jsonify({"error": str(e)}), 500
 
 app.register_blueprint(mw_blueprint)
