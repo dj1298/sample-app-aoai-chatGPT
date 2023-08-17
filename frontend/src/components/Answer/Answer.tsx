@@ -134,7 +134,7 @@ export const Answer = ({
                         </Stack>
                     </Stack.Item>
                 )}
-                {!!parsedAnswer.citations.length && (
+                {/* {!!parsedAnswer.citations.length && (
                     <Stack.Item>
                         <Stack style={{width: "100%"}} >
                             <Stack horizontal horizontalAlign='start' verticalAlign='center'>
@@ -154,7 +154,7 @@ export const Answer = ({
                             
                         </Stack>
                     </Stack.Item>
-                )}
+                )} */}
                 <Stack.Item className={styles.answerDisclaimerContainer}>
                     <span className={styles.answerDisclaimer}>AI-generated content may be incorrect</span>
                 </Stack.Item>

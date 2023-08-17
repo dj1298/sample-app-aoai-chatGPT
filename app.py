@@ -185,7 +185,7 @@ def stream_with_data(body, headers, endpoint):
 
                     yield json.dumps(response).replace("\n", "\\n") + "\n"
     except Exception as e:
-        logger.exception("Error:" str(e))
+        logger.exception("Error:", str(e))
         yield json.dumps({"error": str(e)}).replace("\n", "\\n") + "\n"
 
 
