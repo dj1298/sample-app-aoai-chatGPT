@@ -209,6 +209,15 @@ class TextParser(BaseParser):
                     last_line = lines[-1].strip()  # Remove any leading/trailing whitespace characters
                     return last_line
         except UnicodeDecodeError:
+            print(f"-=-=-=-=-=")
+            print(f"-=-=-=-UnicodeDecodeError-=-=-=-"
+            print(file_path)
+            return None
+        except Exception as e:
+            print(f"-=-=-=-=-=")
+            print(file_path)
+            print(e)
+            print(f"-=-=-=-=-=")
             return None
         else:
             return None  # File is empty, there are no lines to read
@@ -756,8 +765,9 @@ def chunk_directory(
 
                 if last_line is not None:
                     document_Link = last_line.split('document_link: ', 1)
-                    for chunk in result.chunks:
-                        chunk.url = document_Link[1]
+                    if len(document_Link) >= 2:
+                        for chunk in result.chunks:
+                            chunk.url = document_Link[1]
 
                 if is_error:
                     num_files_with_errors += 1
