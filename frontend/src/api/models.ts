@@ -29,10 +29,19 @@ export type ToolMessageContent = {
 }
 
 export type ChatMessage = {
+    id: string;
     role: string;
     content: string;
     end_turn?: boolean;
+    date: string;
 };
+
+export type Conversation = {
+    id: string;
+    title: string;
+    messages: ChatMessage[];
+    date: string;
+}
 
 export enum ChatCompletionType {
     ChatCompletion = "chat.completion",
@@ -49,6 +58,11 @@ export type ChatResponse = {
     created: number;
     object: ChatCompletionType;
     choices: ChatResponseChoice[];
+    history_metadata: {
+        conversation_id: string;
+        title: string;
+        date: string;
+    }
     error?: any;
 }
 
@@ -65,3 +79,26 @@ export type UserInfo = {
     user_claims: any[];
     user_id: string;
 };
+
+export enum CosmosDBStatus {
+    NotConfigured = "CosmosDB is not configured",
+    NotWorking = "CosmosDB is not working",
+    Working = "CosmosDB is configured and working",
+}
+
+export type CosmosDBHealth = {
+    cosmosDB: boolean,
+    status: string
+}
+
+export enum ChatHistoryLoadingState {
+    Loading = "loading",
+    Success = "success",
+    Fail = "fail",
+    NotStarted = "notStarted"
+}
+
+export type ErrorMessage = {
+    title: string,
+    subtitle: string
+}
