@@ -178,7 +178,7 @@ def generateFilterString(userToken):
 
 def prepare_body_headers_with_data(request):
     request_messages = request.json["messages"]
-    request_settings = request.json["settings"]
+
 
     # Set query type
     query_type = "simple"
@@ -207,7 +207,7 @@ def prepare_body_headers_with_data(request):
                 "parameters": {
                     "endpoint": f"https://{AZURE_SEARCH_SERVICE}.search.windows.net",
                     "key": AZURE_SEARCH_KEY,
-                    "indexName": map_acs_index(request_settings["acs_index"], AZURE_SEARCH_INDEX),
+                    "indexName": AZURE_SEARCH_INDEX,
                     "fieldsMapping": {
                         "contentFields": AZURE_SEARCH_CONTENT_COLUMNS.split("|") if AZURE_SEARCH_CONTENT_COLUMNS else [],
                         "titleField": AZURE_SEARCH_TITLE_COLUMN if AZURE_SEARCH_TITLE_COLUMN else None,
@@ -655,8 +655,6 @@ def generate_title(conversation_messages):
         return title
     except Exception as e:
         return messages[-2]['content']
-
-app.register_blueprint(mw_blueprint)
 
 if __name__ == "__main__":
     app.run()

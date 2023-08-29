@@ -27,8 +27,7 @@ import {
     historyClear,
     ChatHistoryLoadingState,
     CosmosDBStatus,
-    ErrorMessage
-    getUserInfo,
+    ErrorMessage,
     Diagnostic
 } from "../../api";
 import { Answer } from "../../components/Answer";
@@ -157,10 +156,9 @@ const Chat = () => {
         setMessages(conversation.messages)
         
         const request: ConversationRequest = {
-            messages: [...conversation.messages.filter((answer) => answer.role !== "error")]
+            //messages: [...conversation.messages.filter((answer) => answer.role !== "error")]
             // messages: [...conversation.messages.filter((answer) => answer.role === "error")]
             messages: [...answers.filter((answer) => answer.role !== "error"), userMessage],
-            settings: settings,
         };
 
         let result = {} as ChatResponse;
@@ -619,7 +617,6 @@ const Chat = () => {
                                                     answer={{
                                                         answer: answer.content,
                                                         citations: parseCitationFromMessage(messages[index - 1]),
-                                                        citations: parseCitationFromMessage(answers[index - 1]),
                                                         // diagnostics: parseDiagnosticsFromMessage(answers[index - 1]),
                                                     }}
                                                     onCitationClicked={c => onShowCitation(c)}

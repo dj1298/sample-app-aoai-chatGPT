@@ -9,7 +9,6 @@ export async function conversationApi(options: ConversationRequest, abortSignal:
         },
         body: JSON.stringify({
             messages: options.messages,
-            settings: options.settings,
         }),
         signal: abortSignal
     });
