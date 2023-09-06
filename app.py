@@ -656,5 +656,7 @@ def generate_title(conversation_messages):
     except Exception as e:
         return messages[-2]['content']
 
+app.register_blueprint(mw_blueprint)
+
 if __name__ == "__main__":
     app.run()

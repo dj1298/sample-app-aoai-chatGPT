@@ -216,7 +216,7 @@ class TextParser(BaseParser):
                     return last_line
         except UnicodeDecodeError:
             print(f"-=-=-=-=-=")
-            print(f"-=-=-=-UnicodeDecodeError-=-=-=-"
+            print(f"-=-=-=-UnicodeDecodeError-=-=-=-")
             print(file_path)
             return None
         except Exception as e:
