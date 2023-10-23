@@ -64,7 +64,7 @@ const Chat = () => {
     const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showLoadingMessage, setShowLoadingMessage] = useState<boolean>(false);
-    const [activeCitation, setActiveCitation] = useState<[content: string, id: string, title: string, filepath: string, url: string, metadata: string]>();
+    const [activeCitation, setActiveCitation] = useState<Citation>();
     const [isCitationPanelOpen, setIsCitationPanelOpen] = useState<boolean>(false);
     const [isDiagnosticPanelOpen, setIsDiagnosticPanelOpen] = useState(false);
     const [answers, setAnswers] = useState<ChatMessage[]>([]);
@@ -184,7 +184,11 @@ const Chat = () => {
                                 obj.date = new Date().toISOString();
                             })
                             setShowLoadingMessage(false);
-                            setMessages([...messages, ...result.choices[0].messages]);
+                            if(!conversationId){
+                                setMessages([...messages, userMessage, ...result.choices[0].messages]);
+                            }else{
+                                setMessages([...messages, ...result.choices[0].messages]);
+                            }
                             runningText = "";
                         }
                         catch { }
@@ -523,8 +527,13 @@ const Chat = () => {
 
     const onShowCitation = (citation: Citation) => {
         setActiveCitation([citation.content, citation.id, citation.title ?? "", citation.filepath ?? "", citation.url ?? "", ""]);
-        setActiveCitation([citation.content, citation.id, citation.title ?? "", citation.filepath ?? "", citation.url ?? "", ""]);
         setIsCitationPanelOpen(true);
+    };
+
+    const onViewSource = (citation: Citation) => {
+        if (citation.url && !citation.url.includes("blob.core")) {
+            window.open(citation.url, "_blank");
+        }
     };
 
     const onShowDiagnostic = (diagnostic: Diagnostic) => {
@@ -705,7 +714,7 @@ const Chat = () => {
                                     }}
                                     className={appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured ? styles.clearChatBroom : styles.clearChatBroomNoCosmos}
                                     iconProps={{ iconName: 'Broom' }}
-                                    onClick={clearChat}
+                                    onClick={appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured ? clearChat : newChat}
                                     disabled={disabledButton()}
                                     aria-label="clear chat button"
                                 />
@@ -729,12 +738,14 @@ const Chat = () => {
                         </Stack>
                         <MwFooter />
                     </div>
-                    {messages && messages.length > 0 && isCitationPanelOpen && activeCitation && (
+                    {/* Citation Panel */}
+                    {messages && messages.length > 0 && isCitationPanelOpen && activeCitation && ( 
                     <Stack.Item className={styles.citationPanel} tabIndex={0} role="tabpanel" aria-label="Citations Panel">
                         <Stack aria-label="Citations Panel Header Container" horizontal className={styles.citationPanelHeaderContainer} horizontalAlign="space-between" verticalAlign="center">
                             <span aria-label="Citations" className={styles.citationPanelHeader}>Citations</span>
                             <IconButton iconProps={{ iconName: 'Cancel'}} aria-label="Close citations panel" onClick={() => setIsCitationPanelOpen(false)}/>
                         </Stack>
+                        <h5 className={styles.citationPanelTitle} tabIndex={0} title={activeCitation.url && !activeCitation.url.includes("blob.core") ? activeCitation.url : activeCitation.title ?? ""} onClick={() => onViewSource(activeCitation)}>{activeCitation.title}</h5>
                         {activeCitation[4] ? (
                                     <a href={activeCitation[4]} target="_blank">
                                         <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
@@ -753,12 +764,11 @@ const Chat = () => {
                         <ReactMarkdown 
                             linkTarget="_blank"
                             className={styles.citationPanelContent}
-                            children={activeCitation[0]} 
+                            children={activeCitation.content} 
                             remarkPlugins={[remarkGfm]} 
                             rehypePlugins={[rehypeRaw]}
                         />
                         </div>
-                        
                     </Stack.Item>
                 )}
                 {(appStateContext?.state.isChatHistoryOpen && appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured) && <ChatHistoryPanel/>}
