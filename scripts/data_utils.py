@@ -783,7 +783,6 @@ def chunk_directory(
                                        token_overlap=token_overlap,
                                        extensions_to_process=extensions_to_process,
                                        form_recognizer_client=form_recognizer_client, use_layout=use_layout, add_embeddings=add_embeddings)
-                                       form_recognizer_client=form_recognizer_client, use_layout=use_layout)
             else:
                 result, is_error = process_file(file_path=file_path,directory_path=directory_path, ignore_errors=ignore_errors,
                                        num_tokens=num_tokens,
@@ -791,10 +790,7 @@ def chunk_directory(
                                        document_link="",
                                        token_overlap=token_overlap,
                                        extensions_to_process=extensions_to_process,
-                                       form_recognizer_client=form_recognizer_client, use_layout=use_layout)
-                
-                
-            
+                                       form_recognizer_client=form_recognizer_client, use_layout=use_layout, add_embeddings=add_embeddings)
             if is_error:
                 num_files_with_errors += 1
                 continue
