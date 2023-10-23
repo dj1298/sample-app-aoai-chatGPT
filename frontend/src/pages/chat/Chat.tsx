@@ -526,7 +526,7 @@ const Chat = () => {
     }, [showLoadingMessage, processMessages]);
 
     const onShowCitation = (citation: Citation) => {
-        setActiveCitation([citation.content, citation.id, citation.title ?? "", citation.filepath ?? "", citation.url ?? "", ""]);
+        setActiveCitation(citation);
         setIsCitationPanelOpen(true);
     };
 
@@ -741,35 +741,21 @@ const Chat = () => {
                     {/* Citation Panel */}
                     {messages && messages.length > 0 && isCitationPanelOpen && activeCitation && ( 
                     <Stack.Item className={styles.citationPanel} tabIndex={0} role="tabpanel" aria-label="Citations Panel">
-                        <Stack aria-label="Citations Panel Header Container" horizontal className={styles.citationPanelHeaderContainer} horizontalAlign="space-between" verticalAlign="center">
-                            <span aria-label="Citations" className={styles.citationPanelHeader}>Citations</span>
-                            <IconButton iconProps={{ iconName: 'Cancel'}} aria-label="Close citations panel" onClick={() => setIsCitationPanelOpen(false)}/>
-                        </Stack>
-                        <h5 className={styles.citationPanelTitle} tabIndex={0} title={activeCitation.url && !activeCitation.url.includes("blob.core") ? activeCitation.url : activeCitation.title ?? ""} onClick={() => onViewSource(activeCitation)}>{activeCitation.title}</h5>
-                        {activeCitation[4] ? (
-                                    <a href={activeCitation[4]} target="_blank">
-                                        <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
-                                    </a>
-                                ) : (
-                                    <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
-                                )}
-                                {activeCitation[4] ? (
-                                    <a href={activeCitation[4]} target="_blank">
-                                        <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
-                                    </a>
-                                ) : (
-                                    <h5 className={styles.citationPanelTitle} tabIndex={0}>{activeCitation[2]}</h5>
-                                )}
-                        <div tabIndex={0}> 
-                        <ReactMarkdown 
-                            linkTarget="_blank"
-                            className={styles.citationPanelContent}
-                            children={activeCitation.content} 
-                            remarkPlugins={[remarkGfm]} 
-                            rehypePlugins={[rehypeRaw]}
-                        />
-                        </div>
-                    </Stack.Item>
+                    <Stack aria-label="Citations Panel Header Container" horizontal className={styles.citationPanelHeaderContainer} horizontalAlign="space-between" verticalAlign="center">
+                        <span aria-label="Citations" className={styles.citationPanelHeader}>Citations</span>
+                        <IconButton iconProps={{ iconName: 'Cancel'}} aria-label="Close citations panel" onClick={() => setIsCitationPanelOpen(false)}/>
+                    </Stack>
+                    <h5 className={styles.citationPanelTitle} tabIndex={0} title={activeCitation.url && !activeCitation.url.includes("blob.core") ? activeCitation.url : activeCitation.title ?? ""} onClick={() => onViewSource(activeCitation)}>{activeCitation.title}</h5>
+                    <div tabIndex={0}> 
+                    <ReactMarkdown 
+                        linkTarget="_blank"
+                        className={styles.citationPanelContent}
+                        children={activeCitation.content} 
+                        remarkPlugins={[remarkGfm]} 
+                        rehypePlugins={[rehypeRaw]}
+                    />
+                    </div>
+                </Stack.Item>
                 )}
                 {(appStateContext?.state.isChatHistoryOpen && appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured) && <ChatHistoryPanel/>}
                 </Stack>
